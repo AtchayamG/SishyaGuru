@@ -1,0 +1,143 @@
+:root {
+  /* Professional slate palette; all text pairs meet WCAG 2.2 AA contrast. */
+  --bg: #f4f6f8;
+  --surface: #ffffff;
+  --border: #c2ccd6;
+  --text: #1a2330;
+  --text-muted: #46566a; /* 4.5:1+ on --surface and --bg */
+  --accent: #1d4ed8;
+  --focus: #1d4ed8;
+  --badge-bg: #e8edf3;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  line-height: 1.5;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--surface);
+  color: var(--accent);
+  padding: 0.5rem 1rem;
+  z-index: 10;
+}
+
+.skip-link:focus {
+  left: 0.5rem;
+  top: 0.5rem;
+}
+
+.app-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+}
+
+.app-header h1 {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.tagline {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.badges {
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.badge {
+  background: var(--badge-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.25rem;
+  color: var(--text);
+  font-size: 0.8125rem;
+  padding: 0.125rem 0.5rem;
+  white-space: nowrap;
+}
+
+.workspace {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+  padding: 1rem;
+  max-width: 90rem;
+  margin: 0 auto;
+}
+
+/* Desktop three-panel layout: map 25%, conversation 50%, feedback 25%. */
+@media (min-width: 1024px) {
+  .workspace {
+    grid-template-columns: 1fr 2fr 1fr;
+    align-items: start;
+  }
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.panel h2 {
+  font-size: 1rem;
+  margin: 0 0 0.5rem;
+}
+
+.panel p {
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  margin: 0.5rem 0;
+}
+
+.app-footer {
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  padding: 0 1rem 1rem;
+  max-width: 90rem;
+  margin: 0 auto;
+}
