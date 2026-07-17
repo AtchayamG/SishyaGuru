@@ -32,7 +32,7 @@ npm run smoke:live-ui
 Requirements: Node.js 22.13+ and npm.
 
 ```bash
-git clone <public-repository-url>
+git clone https://github.com/AtchayamG/SishyaGuru.git
 cd SishyaGuru
 npm ci
 npm run dev
