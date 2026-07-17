@@ -3,7 +3,7 @@
 - Product: SishyaGuru, a reverse-teaching mastery coach.
 - Tagline: You teach. AI learns. You master.
 - Workspace: `D:\Work\Codex\Hackathon Projects\OpenAI Hackathon\SishyaGuru`.
-- Phase: pre-production complete; ready for M1 application foundation.
+- Phase: M1 application foundation verified; M2 domain contracts is active.
 - Primary category: Education.
 - Core constraint: the project must be unique and substantially different from Incident Commander AI.
 - Frozen P0: the Water Cycle with eight trusted concepts, evidence-bound mastery
@@ -17,5 +17,9 @@
   makes zero OpenAI audio calls.
 - Canonical mastery states: `unassessed`, `insufficient_evidence`, `emerging`, `developing`, `secure`.
 - Provider contract: Responses API Structured Outputs via `text.format`, `store: false`; invalid evidence rejects the complete result; no automatic Live-to-Replay fallback.
-- Next: scaffold the single strict-TypeScript Next.js application and implement M1 gates
-  without adding a database, auth, queues, RAG, multiple topics, or Realtime session.
+- M1 evidence: strict Next.js App Router foundation, Replay-default server configuration,
+  accessible responsive shell, microphone capability detection without a permission
+  request, 6 unit tests and 3 Chromium smoke tests; all lint/typecheck/build gates pass.
+- Next: implement M2 contracts, the eight-node Water Cycle rubric, evidence validator,
+  mastery reducer and deterministic Replay fixtures without adding a database, auth,
+  queues, RAG, multiple topics, or a Realtime session.

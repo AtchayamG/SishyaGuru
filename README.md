@@ -8,7 +8,20 @@ understanding grow through a live concept mastery map.
 
 ## Status
 
-Pre-production architecture, product, UX, safety, testing, evaluation, and submission planning are complete. Implementation has not started, and no working product or live GPT-5.6 result is claimed yet.
+Pre-production architecture is complete and the verified M1 Next.js application
+foundation is implemented. The reverse-teaching loop and live GPT-5.6/audio proofs are
+not implemented yet; deterministic Replay remains the build-first path.
+
+## Local foundation checks
+
+```bash
+npm install
+npm run lint
+npm run typecheck
+npm test
+npm run build
+npm run smoke
+```
 
 ## Documentation
 
