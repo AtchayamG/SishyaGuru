@@ -67,6 +67,13 @@ describe("domain / replay", () => {
       ...summary.result,
       gaps: [{ nodeId: "unknown-node", note: "Unknown gap" }],
     }, REPLAY_TURN_FIXTURES.map((fixture) => fixture.explanation)).ok).toBe(false);
+
+    const strengthNode = summary.result.strengths[0]?.nodeId;
+    expect(strengthNode).toBeDefined();
+    expect(validateSummaryResult({
+      ...summary.result,
+      gaps: [{ nodeId: strengthNode, note: "Conflicts with a claimed strength" }],
+    }, REPLAY_TURN_FIXTURES.map((fixture) => fixture.explanation)).ok).toBe(false);
   });
 
   it("returns undefined for unknown topic", () => {

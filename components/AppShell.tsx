@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import type { MasteryState } from "@/lib/contract";
+import { TranscriptionEnvelopeSchema, type MasteryState } from "@/lib/contract";
 import { useClientSession } from "@/lib/client-session";
 import type { ProviderMode } from "@/lib/env";
 import { WATER_CYCLE_TOPIC } from "@/lib/topic";
@@ -11,7 +11,7 @@ type WorkspaceTab = "map" | "chat" | "feedback";
 
 const PROVIDER_LABELS: Record<ProviderMode, string> = {
   replay: "Simulated (Replay mode)",
-  live: "Live configured — adapter unavailable in M3",
+  live: "Live GPT-5.6 + bounded voice",
 };
 const TABS: readonly WorkspaceTab[] = ["map", "chat", "feedback"];
 const STATE_ICONS: Record<MasteryState, string> = {
@@ -36,17 +36,52 @@ export default function AppShell({ providerMode }: { providerMode: ProviderMode 
     detectVoiceSupport,
     () => "checking",
   );
-  const { state, isLoaded, clearSession, submitTurn, requestSummary, currentFixture } =
-    useClientSession();
+  const {
+    state,
+    isLoaded,
+    isBusy,
+    probeAudio,
+    clearSession,
+    submitTurn,
+    requestSummary,
+    currentFixture,
+  } = useClientSession(providerMode);
   const [inputText, setInputText] = useState("");
   const [activeTab, setActiveTab] = useState<WorkspaceTab>("chat");
   const [isSimulatedTranscript, setIsSimulatedTranscript] = useState(false);
+  const [voiceState, setVoiceState] = useState<"idle" | "recording" | "transcribing">("idle");
+  const [voiceError, setVoiceError] = useState<string | null>(null);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
   const chatLogRef = useRef<HTMLDivElement>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const recordingTimerRef = useRef<number | null>(null);
+  const recordingIntervalRef = useRef<number | null>(null);
+  const recordedBytesRef = useRef(0);
+  const discardRecordingRef = useRef(false);
+  const recordingTooLargeRef = useRef(false);
+  const transcriptionAbortRef = useRef<AbortController | null>(null);
+  const voiceGenerationRef = useRef(0);
+  const voiceBusyRef = useRef(false);
   const replayEnabled = providerMode === "replay";
 
   useEffect(() => {
     if (chatLogRef.current) chatLogRef.current.scrollTop = chatLogRef.current.scrollHeight;
   }, [state.messages]);
+
+  useEffect(() => () => {
+    voiceGenerationRef.current += 1;
+    transcriptionAbortRef.current?.abort();
+    if (recorderRef.current?.state === "recording") {
+      discardRecordingRef.current = true;
+      recorderRef.current.stop();
+    }
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    if (recordingTimerRef.current !== null) window.clearTimeout(recordingTimerRef.current);
+    if (recordingIntervalRef.current !== null) window.clearInterval(recordingIntervalRef.current);
+    chunksRef.current = [];
+  }, []);
 
   function activateTab(tab: WorkspaceTab) {
     setActiveTab(tab);
@@ -61,12 +96,177 @@ export default function AppShell({ providerMode }: { providerMode: ProviderMode 
     activateTab(TABS[(current + delta + TABS.length) % TABS.length] ?? "chat");
   }
 
-  function submitExplanation() {
-    if (!replayEnabled || !inputText.trim()) return;
-    if (submitTurn(inputText)) {
+  async function submitExplanation() {
+    if (!inputText.trim() || isBusy) return;
+    if (await submitTurn(inputText)) {
       setInputText("");
       setIsSimulatedTranscript(false);
     }
+  }
+
+  function releaseMicrophone() {
+    recorderRef.current = null;
+    const stream = streamRef.current;
+    streamRef.current = null;
+    stream?.getTracks().forEach((track) => track.stop());
+    if (recordingTimerRef.current !== null) window.clearTimeout(recordingTimerRef.current);
+    recordingTimerRef.current = null;
+    if (recordingIntervalRef.current !== null) window.clearInterval(recordingIntervalRef.current);
+    recordingIntervalRef.current = null;
+    voiceBusyRef.current = false;
+    setRecordingSeconds(0);
+  }
+
+  function cancelVoiceWork(showDiscarded = false) {
+    voiceGenerationRef.current += 1;
+    transcriptionAbortRef.current?.abort();
+    transcriptionAbortRef.current = null;
+    discardRecordingRef.current = true;
+    if (recorderRef.current?.state === "recording") recorderRef.current.stop();
+    releaseMicrophone();
+    chunksRef.current = [];
+    recordedBytesRef.current = 0;
+    recordingTooLargeRef.current = false;
+    setVoiceState("idle");
+    if (showDiscarded) setVoiceError("Recording discarded. You can record again or continue by typing.");
+  }
+
+  async function startRecording() {
+    if (
+      providerMode !== "live" ||
+      voiceSupport !== "supported" ||
+      voiceState !== "idle" ||
+      voiceBusyRef.current
+    ) return;
+    voiceBusyRef.current = true;
+    setVoiceError(null);
+    const generation = voiceGenerationRef.current + 1;
+    voiceGenerationRef.current = generation;
+    discardRecordingRef.current = false;
+    recordingTooLargeRef.current = false;
+    recordedBytesRef.current = 0;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      if (voiceGenerationRef.current !== generation) {
+        stream.getTracks().forEach((track) => track.stop());
+        return;
+      }
+      streamRef.current = stream;
+      const mimeType = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4"].find((type) =>
+        MediaRecorder.isTypeSupported(type),
+      );
+      if (!mimeType) throw new Error("unsupported recording format");
+      const recorder = new MediaRecorder(stream, { mimeType });
+      recorderRef.current = recorder;
+      stream.getTracks().forEach((track) => {
+        track.addEventListener?.("ended", () => {
+          if (
+            voiceGenerationRef.current === generation &&
+            recorderRef.current === recorder &&
+            recorder.state === "recording"
+          ) {
+            cancelVoiceWork();
+            setVoiceError("Microphone capture ended unexpectedly. You can retry or continue by typing.");
+          }
+        });
+      });
+      chunksRef.current = [];
+      recorder.ondataavailable = (event) => {
+        if (
+          voiceGenerationRef.current !== generation ||
+          recorderRef.current !== recorder
+        ) return;
+        if (event.data.size <= 0) return;
+        chunksRef.current.push(event.data);
+        recordedBytesRef.current += event.data.size;
+        if (recordedBytesRef.current > 5 * 1024 * 1024) {
+          recordingTooLargeRef.current = true;
+          if (recorder.state === "recording") recorder.stop();
+        }
+      };
+      recorder.onerror = () => {
+        if (
+          voiceGenerationRef.current !== generation ||
+          recorderRef.current !== recorder
+        ) return;
+        cancelVoiceWork();
+        setVoiceError("Recording stopped unexpectedly. You can retry or continue by typing.");
+      };
+      recorder.onstop = async () => {
+        if (
+          voiceGenerationRef.current !== generation ||
+          recorderRef.current !== recorder
+        ) return;
+        const discarded = discardRecordingRef.current;
+        const tooLarge = recordingTooLargeRef.current;
+        const chunks = chunksRef.current;
+        chunksRef.current = [];
+        const blob = new Blob(chunks, { type: mimeType.split(";")[0] });
+        releaseMicrophone();
+        recordedBytesRef.current = 0;
+        if (discarded || voiceGenerationRef.current !== generation) return;
+        setVoiceState("transcribing");
+        if (tooLarge || blob.size === 0 || blob.size > 5 * 1024 * 1024) {
+          setVoiceError("The recording was empty or larger than 5 MB. Please retry or type instead.");
+          setVoiceState("idle");
+          return;
+        }
+        const controller = new AbortController();
+        transcriptionAbortRef.current = controller;
+        try {
+          const form = new FormData();
+          form.append("audio", blob, mimeType.startsWith("audio/mp4") ? "lesson.mp4" : "lesson.webm");
+          const response = await fetch("/api/audio/transcribe", {
+            method: "POST",
+            body: form,
+            signal: controller.signal,
+          });
+          if (voiceGenerationRef.current !== generation) return;
+          const envelope = TranscriptionEnvelopeSchema.safeParse(await response.json());
+          if (voiceGenerationRef.current !== generation) return;
+          if (!envelope.success) {
+            setVoiceError("The transcription response could not be read. You can continue by typing.");
+          } else if (!envelope.data.ok) {
+            setVoiceError(envelope.data.message);
+          } else {
+            setInputText(envelope.data.transcript);
+            setIsSimulatedTranscript(true);
+          }
+        } catch (error) {
+          if (
+            voiceGenerationRef.current === generation &&
+            !(error instanceof DOMException && error.name === "AbortError")
+          ) {
+            setVoiceError("The recording could not be transcribed. You can retry or continue by typing.");
+          }
+        } finally {
+          if (voiceGenerationRef.current === generation) {
+            transcriptionAbortRef.current = null;
+            setVoiceState("idle");
+          }
+        }
+      };
+      recorder.start(250);
+      setVoiceState("recording");
+      recordingTimerRef.current = window.setTimeout(() => recorder.stop(), 60_000);
+      recordingIntervalRef.current = window.setInterval(
+        () => setRecordingSeconds((seconds) => Math.min(seconds + 1, 60)),
+        1_000,
+      );
+    } catch {
+      if (voiceGenerationRef.current !== generation) return;
+      releaseMicrophone();
+      setVoiceState("idle");
+      setVoiceError("Microphone access was unavailable. Typing remains the complete path.");
+    }
+  }
+
+  function stopRecording() {
+    if (recorderRef.current?.state === "recording") recorderRef.current.stop();
+  }
+
+  function discardRecording() {
+    cancelVoiceWork(true);
   }
 
   if (!isLoaded) {
@@ -91,9 +291,12 @@ export default function AppShell({ providerMode }: { providerMode: ProviderMode 
             type="button"
             onClick={() => {
               if (window.confirm("Clear browser-local progress and restart this session?")) {
+                cancelVoiceWork();
                 clearSession();
                 setInputText("");
                 setIsSimulatedTranscript(false);
+                setVoiceError(null);
+                setVoiceState("idle");
               }
             }}
           >
@@ -103,18 +306,13 @@ export default function AppShell({ providerMode }: { providerMode: ProviderMode 
         <p className="voice-support" data-testid="voice-support" role="status">
           {voiceSupport === "checking" && "Checking optional push-to-talk capability…"}
           {voiceSupport === "supported" &&
-            "This browser supports push-to-talk recording; M3 does not request microphone access."}
+            (replayEnabled
+              ? "Push-to-talk is simulated in Replay; no microphone permission is requested."
+              : "Push-to-talk is ready. Recording starts only after you choose Record lesson.")}
           {voiceSupport === "unsupported" &&
             "Push-to-talk is unavailable in this browser; typing remains the complete path."}
         </p>
       </header>
-
-      {!replayEnabled && (
-        <div className="live-pending" role="alert">
-          Live mode is configured, but its GPT-5.6 and audio adapters are not implemented
-          until M4. Assessment controls are disabled; no Replay result is presented as Live.
-        </div>
-      )}
 
       <nav className="mobile-tabs" aria-label="Learning workspace views" role="tablist">
         {TABS.map((tab) => (
@@ -181,11 +379,20 @@ export default function AppShell({ providerMode }: { providerMode: ProviderMode 
 
           {state.messages.length > 1 && (
             <div className="spoken-probe-state">
-              <button type="button" disabled aria-describedby="spoken-probe-help">
-                Play spoken probe
-              </button>
+              {!replayEnabled && probeAudio && (
+                <audio
+                  controls
+                  preload="none"
+                  aria-label="AI-generated spoken probe"
+                  src={`data:${probeAudio.mediaType};base64,${probeAudio.dataBase64}`}
+                />
+              )}
               <span id="spoken-probe-help">
-                Spoken probe unavailable in Replay M3; the complete question is visible above.
+                {replayEnabled
+                  ? "Spoken probe is disabled in Replay; the complete question is visible above."
+                  : probeAudio
+                    ? "AI-generated voice. Playback starts only when you choose Play."
+                    : "Speech was unavailable; the complete question remains visible above."}
               </span>
             </div>
           )}
@@ -195,9 +402,41 @@ export default function AppShell({ providerMode }: { providerMode: ProviderMode 
           ) : (
             <div className="chat-input-area">
               {state.error && <div className="error-message" role="alert">{state.error}</div>}
+              {voiceError && <div className="error-message" role="alert">{voiceError}</div>}
               {isSimulatedTranscript && (
                 <div className="transcript-badge" id="transcript-review-help">
-                  Simulated transcript — review and edit before explicit submission
+                  {replayEnabled
+                    ? "Simulated transcript — review and edit before explicit submission"
+                    : "Transcribed candidate — review and edit before explicit submission"}
+                </div>
+              )}
+              {!replayEnabled && (
+                <div className="voice-actions" aria-live="polite">
+                  {voiceState === "recording" ? (
+                    <>
+                      <button type="button" className="btn-secondary" onClick={stopRecording}>
+                        Stop and transcribe
+                      </button>
+                      <button type="button" className="btn-secondary" onClick={discardRecording}>
+                        Discard recording
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      disabled={voiceSupport !== "supported" || voiceState === "transcribing" || isBusy}
+                      onClick={() => void startRecording()}
+                    >
+                      Record lesson
+                    </button>
+                  )}
+                  <span>
+                    {voiceState === "recording" &&
+                      `Recording ${Math.floor(recordingSeconds / 60)}:${String(recordingSeconds % 60).padStart(2, "0")} / 1:00.${recordingSeconds >= 50 ? " Ten seconds or less remain." : ""}`}
+                    {voiceState === "transcribing" && "Transcribing… nothing will auto-submit."}
+                    {voiceState === "idle" && "Optional push-to-talk; typing remains available."}
+                  </span>
                 </div>
               )}
               <textarea
@@ -206,16 +445,22 @@ export default function AppShell({ providerMode }: { providerMode: ProviderMode 
                 placeholder={
                   replayEnabled
                     ? "Teach the AI Learner…"
-                    : "Live assessment is unavailable until the M4 adapters exist."
+                    : "Teach Guru in your own words, or record a lesson…"
                 }
                 rows={5}
-                aria-label={isSimulatedTranscript ? "Simulated transcript review" : "Your explanation"}
+                aria-label={
+                  isSimulatedTranscript
+                    ? replayEnabled
+                      ? "Simulated transcript review"
+                      : "Transcribed candidate review"
+                    : "Your explanation"
+                }
                 aria-describedby={isSimulatedTranscript ? "transcript-review-help" : undefined}
-                disabled={!replayEnabled}
+                disabled={isBusy || voiceState !== "idle"}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" && !event.shiftKey) {
                     event.preventDefault();
-                    submitExplanation();
+                    void submitExplanation();
                   }
                 }}
               />
@@ -248,15 +493,24 @@ export default function AppShell({ providerMode }: { providerMode: ProviderMode 
                   <button
                     type="button"
                     className="btn-primary"
-                    disabled={!inputText.trim() || !replayEnabled}
-                    onClick={submitExplanation}
+                    disabled={!inputText.trim() || isBusy || voiceState !== "idle"}
+                    onClick={() => void submitExplanation()}
                   >
-                    {isSimulatedTranscript ? "Submit Reviewed Transcript" : "Submit Explanation"}
+                    {isBusy
+                      ? "Assessing…"
+                      : isSimulatedTranscript
+                        ? "Submit Reviewed Transcript"
+                        : "Submit Explanation"}
                   </button>
                 )}
                 {!currentFixture && (
-                  <button type="button" className="btn-primary" onClick={requestSummary}>
-                    End Session
+                  <button
+                    type="button"
+                    className="btn-primary"
+                    disabled={isBusy}
+                    onClick={() => void requestSummary()}
+                  >
+                    {isBusy ? "Creating summary…" : "End Session"}
                   </button>
                 )}
               </div>
@@ -337,9 +591,11 @@ export default function AppShell({ providerMode }: { providerMode: ProviderMode 
 
       <footer className="app-footer">
         <p>
-          M3 uses labelled deterministic Replay only. Progress stays in this browser;
-          no audio, secret, or OpenAI request is stored or sent. Do not include personal
-          or sensitive information. Clear progress removes the browser-local session.
+          {replayEnabled
+            ? "Replay uses labelled simulated evidence and makes no OpenAI or microphone calls."
+            : "Live sends only explicitly submitted text or a bounded recording to OpenAI. The app does not persist audio or transcripts; provider processing still applies."}
+          {" "}Progress stays in this browser. Do not include personal or sensitive information.
+          Clear progress removes the browser-local session.
         </p>
       </footer>
     </>

@@ -1,8 +1,8 @@
 import OpenAI from "openai";
 import { describe, expect, it, vi } from "vitest";
 import { initialMasteryStates } from "../../lib/topic";
-import { getReplayTurnFixture } from "../../lib/replay";
-import { createLiveTurn } from "../../lib/server/live-provider";
+import { getReplaySummaryFixture, getReplayTurnFixture } from "../../lib/replay";
+import { createLiveSummary, createLiveTurn } from "../../lib/server/live-provider";
 import { inspectAudio, transcribeLiveAudio } from "../../lib/server/audio-provider";
 
 const WEBM_FIXTURE = Buffer.from(
@@ -121,5 +121,26 @@ describe("Live provider boundaries", () => {
       media: { mediaType: "audio/webm", durationSource: "server-derived" },
     });
     expect(fake.transcribe).toHaveBeenCalledOnce();
+  });
+
+  it("accepts only a summary grounded in accumulated learner evidence", async () => {
+    const fixture = getReplaySummaryFixture("water-cycle");
+    const fake = clientWithResult(fixture?.result);
+    const evidenceCorpus = [
+      getReplayTurnFixture("water-cycle", 0)!.explanation,
+      getReplayTurnFixture("water-cycle", 1)!.explanation,
+      getReplayTurnFixture("water-cycle", 2)!.explanation,
+    ];
+    const result = await createLiveSummary(
+      {
+        topicId: "water-cycle",
+        evidenceCorpus,
+        masteryStates: initialMasteryStates(),
+      },
+      fake.client,
+    );
+
+    expect(result).toMatchObject({ ok: true, providerMode: "live" });
+    expect(fake.parse.mock.calls[0]?.[0]).toMatchObject({ model: "gpt-5.6", store: false });
   });
 });

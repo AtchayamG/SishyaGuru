@@ -8,11 +8,12 @@ understanding grow through a live concept mastery map.
 
 ## Status
 
-Pre-production architecture and milestones M1-M3 are implemented and verified. The app
+Pre-production architecture and milestones M1-M4 are implemented and verified. The app
 includes a deterministic three-turn Replay learning loop, evidence-bound mastery map,
 grounded feedback/summary, browser-local progress, and an explicit simulated transcript
-review path. Live GPT-5.6/audio proofs are the active M4 work; Replay remains the reliable
-credential-free path.
+review path. Live mode adds server-only GPT-5.6 Structured Outputs, bounded push-to-talk
+transcription, and disclosed exact-probe speech; Replay remains the reliable
+credential-free judging path.
 
 ## Local quality checks
 
@@ -23,6 +24,7 @@ npm run typecheck
 npm test
 npm run build
 npm run smoke
+npm run smoke:live-ui
 ```
 
 ## Documentation

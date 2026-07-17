@@ -158,11 +158,15 @@ export function validateSummaryResult(
 
   const seenGaps = new Set<string>();
   for (const gap of parsed.data.gaps) {
-    if (!known.has(gap.nodeId) || seenGaps.has(gap.nodeId)) {
+    if (
+      !known.has(gap.nodeId) ||
+      seenGaps.has(gap.nodeId) ||
+      seenStrengths.has(gap.nodeId)
+    ) {
       return {
         ok: false,
         code: "SCHEMA_INVALID",
-        reason: `unknown or duplicate gap nodeId "${gap.nodeId}"`,
+        reason: `unknown, duplicate, or conflicting gap nodeId "${gap.nodeId}"`,
       };
     }
     seenGaps.add(gap.nodeId);

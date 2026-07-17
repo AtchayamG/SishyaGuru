@@ -2,7 +2,7 @@
 
 ## Verified result
 
-Pre-production and milestones M1-M3 are complete and verified. The
+Pre-production and milestones M1-M4 are complete and verified. The
 repository contains the
 approved voice-inclusive product blueprint, PRD, single-application and bounded voice
 architecture, five ADRs, UX/voice UX/accessibility specifications, safety/privacy
@@ -13,9 +13,19 @@ The application now has a strict Next.js foundation, Replay-default server confi
 an accessible responsive workspace, capability-only microphone detection, and a working
 three-turn Replay learning loop. Evidence-bound mastery updates, grounded summaries,
 browser-local persistence, confirmed clearing and simulated transcript review are
-implemented. Lint, typecheck, 22 unit/contract tests, production build and 9 Chromium
-browser scenarios pass. The live GPT-5.6 response, live transcription/TTS proof, deployment,
-public repository, video, and Devpost submission are not yet claimed.
+implemented. Live mode now uses server-only GPT-5.6 Structured Outputs with `store: false`,
+fail-closed evidence validation, bounded memory-only transcription, and disclosed
+exact-probe speech. The client prevents duplicate work, cancels stale operations, rejects
+provider mismatches, requires transcript review and provides explicit recording discard.
+Lint, typecheck, 33 unit/domain tests, production build, 9 Replay Chromium scenarios and
+7 Live Chromium scenarios pass.
+
+A redacted real-key smoke through the application routes proved one GPT-5.6 assessment
+and the complete disclosed TTS-to-WebM-to-transcription chain. The proof logged only safe
+metadata: eight assessment records, a probe target, 72,960 MP3 bytes, a 4,568 ms
+server-derived WebM duration, and a 54-character candidate transcript. It did not log the
+key, learner content, transcript content or raw provider output. Deployment, public
+repository, video and Devpost submission are not yet claimed.
 
 Codex retained architecture, integration and verification ownership. Earlier disposable
 Claude attempts encountered process authentication/model-access failures even though the

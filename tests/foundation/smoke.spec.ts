@@ -32,7 +32,7 @@ test("voice capability is detected without requesting microphone permission", as
 
   await page.goto("/");
   await expect(page.getByTestId("voice-support")).toContainText(
-    /supports push-to-talk recording|unavailable in this browser/,
+    /simulated in Replay|unavailable in this browser/,
   );
   expect(permissionRequested).toBe(false);
 });

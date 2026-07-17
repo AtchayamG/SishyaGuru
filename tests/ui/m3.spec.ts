@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const storageKey = "sishyaguru_progress_v1";
+const storageKey = "sishyaguru_progress_v2";
 
 async function submitSample(page: import("@playwright/test").Page) {
   await page.getByRole("button", { name: "Use Sample Explanation" }).click();
@@ -20,7 +20,7 @@ test.describe("M3 deterministic Replay", () => {
     await submitSample(page);
     await expect(page.getByText(/Once the droplets in a cloud grow bigger/)).toBeVisible();
     await expect(page.getByLabel("Evaporation: secure")).toBeVisible();
-    await expect(page.getByText("Spoken probe unavailable in Replay M3", { exact: false })).toBeVisible();
+    await expect(page.getByText("Spoken probe is disabled in Replay", { exact: false })).toBeVisible();
 
     await submitSample(page);
     await expect(page.getByText(/where do you think that water goes next/)).toBeVisible();

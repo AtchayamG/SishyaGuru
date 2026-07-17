@@ -195,3 +195,21 @@ export const SummaryResultSchema = z.strictObject({
   disclaimer: z.literal(FORMATIVE_DISCLAIMER), // fixed formative-not-a-grade disclaimer
 });
 export type SummaryResult = z.infer<typeof SummaryResultSchema>;
+
+export const SummaryRequestSchema = z.strictObject({
+  topicId: z.string().min(1),
+  evidenceCorpus: z.array(z.string().min(1).max(4000)).min(1).max(3),
+  masteryStates: z.record(z.string(), MasteryStateSchema),
+});
+export type SummaryRequest = z.infer<typeof SummaryRequestSchema>;
+
+export const SummaryApiSuccessSchema = z.strictObject({
+  ok: z.literal(true),
+  providerMode: z.literal("live"),
+  result: SummaryResultSchema,
+});
+export const SummaryApiEnvelopeSchema = z.union([
+  SummaryApiSuccessSchema,
+  ApiFailureSchema,
+]);
+export type SummaryApiEnvelope = z.infer<typeof SummaryApiEnvelopeSchema>;
