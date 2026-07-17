@@ -2,7 +2,7 @@
 
 - Product: SishyaGuru, a reverse-teaching mastery coach.
 - Tagline: You teach. AI learns. You master.
-- Workspace: `D:\Work\Codex\Hackathon Projects\SishyaGuru`.
+- Workspace: `D:\Work\Codex\Hackathon Projects\OpenAI Hackathon\SishyaGuru`.
 - Phase: pre-production complete; ready for M1 application foundation.
 - Primary category: Education.
 - Core constraint: the project must be unique and substantially different from Incident Commander AI.

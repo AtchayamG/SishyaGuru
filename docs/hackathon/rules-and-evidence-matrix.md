@@ -5,7 +5,7 @@
 - Project: SishyaGuru
 - Category: Education
 - Entrant form: individual
-- Workspace: `D:\Work\Codex\Hackathon Projects\SishyaGuru`
+- Workspace: `D:\Work\Codex\Hackathon Projects\OpenAI Hackathon\SishyaGuru`
 - Separation rule: this is a new education product and must remain substantially different from Incident Commander AI.
 
 ## Authoritative sources
@@ -43,4 +43,3 @@ The website and official rules override this document if they change.
 - Do not claim replay output is a live GPT-5.6 response.
 - Do not create the Devpost entry before the project has a working golden path and truthful evidence.
 - Do not reuse the prior project’s Codex session ID.
-
