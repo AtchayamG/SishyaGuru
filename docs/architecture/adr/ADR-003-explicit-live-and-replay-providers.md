@@ -31,6 +31,8 @@ server-authoritative and returned to the client as `providerMode`. The UI render
 3. Mode is chosen from server env only — a client cannot force Live or spend credits.
 4. Fixtures are pedagogically honest (they include developing and insufficient-evidence turns),
    not cherry-picked to flatter.
+5. Replay makes no OpenAI transcription or speech call. Any sample transcript or probe
+   audio is versioned, deterministic and labelled simulated.
 
 ## Rationale (the ladder)
 

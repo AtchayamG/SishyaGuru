@@ -2,9 +2,9 @@
 
 > **You teach. AI learns. You master.**
 
-SishyaGuru is a reverse-teaching mastery coach where students teach an AI learner,
-answer its curious questions, and watch their understanding grow through a live
-concept mastery map.
+SishyaGuru is a reverse-teaching mastery coach where students teach an AI learner by
+typing or speaking, answer its curious spoken or written questions, and watch their
+understanding grow through a live concept mastery map.
 
 This document is the single source of truth for the SishyaGuru product. Every other
 document (architecture, ADRs, PRD, tests) refines but never contradicts what is
@@ -36,8 +36,9 @@ it never certifies competence, issues a score of record, or diagnoses ability.
 SishyaGuru shares **no product logic, domain model, prompt design, or data flow** with
 Incident Commander AI. Incident Commander AI is an operations/incident-response
 assistant that ingests alerts and coordinates responders under time pressure.
-SishyaGuru is an education product whose core object is a *learner's written explanation
-of a concept* and whose core output is a *cited, uncertainty-aware mastery map*. There
+SishyaGuru is an education product whose core object is a *learner-confirmed explanation
+of a concept*—typed directly or transcribed from a bounded voice turn—and whose core
+output is a *cited, uncertainty-aware mastery map*. There
 is no incident, no alerting, no on-call, no responder coordination, and no runbook
 anywhere in this product. Any reuse of Incident Commander product logic is a hard STOP
 condition (see §16).
@@ -55,7 +56,9 @@ These terms are used with exactly this meaning across all code and documents.
 | **Topic** | One curated subject the learner teaches. P0 ships exactly one Topic: **The Water Cycle**. |
 | **Concept Node** | One idea within a Topic. P0 Topic has **6–8** Concept Nodes. |
 | **Concept Mastery Map** | The graph of Concept Nodes and their `masteryState`, rendered live. It is the product's signature surface. |
-| **Explanation** | One turn of the learner teaching — free text the learner submits explaining part of the Topic. |
+| **Explanation** | One learner-confirmed teaching turn submitted as text. It may be typed directly or created by transcribing a bounded push-to-talk recording, but the learner must review/edit and explicitly submit it. |
+| **Voice Turn** | Optional push-to-talk input that becomes a visible editable transcript. It is never continuous listening and never auto-submits. |
+| **Spoken Probe** | Optional AI-generated speech rendering of the exact Curious Follow-up text. The text remains visible and the UI discloses that the voice is AI-generated. |
 | **Curious Follow-up** (a.k.a. **Probe**) | The AI Learner's single naive question in response to an Explanation, designed to expose a gap without leading. |
 | **Mastery Assessment** | The per-node formative judgment produced for a turn: a `masteryState` plus a **required verbatim quote of the learner's own words** as evidence. |
 | **Misconception** | A flagged likely error in the learner's Explanation, always paired with a verbatim evidence quote and phrased as a gentle "worth double-checking" note, never "wrong". |
@@ -118,12 +121,16 @@ tests). It is always clearly labelled as simulated.
 
 1. Learner opens the app and sees the one curated Topic with its 6–8 Concept Nodes, all `unassessed`.
 2. Learner reads a short prompt from the AI Learner: *"I'm trying to understand [Topic]. Can you teach me [starter concept]?"*
-3. Learner types an Explanation and submits.
-4. The system returns, in one structured response: an updated Mastery Assessment for the touched nodes (each with a quoted evidence snippet), any Misconceptions (each quoted), and one Curious Follow-up probe.
-5. The Concept Mastery Map animates to the new states. The learner sees where they're `secure` vs `emerging` vs `insufficient_evidence`.
-6. Learner answers the probe with another Explanation. Repeat 4–5 for a few Turns.
-7. Learner ends the session and receives a Session Summary with quoted evidence for strengths, gaps to revisit, and a suggested next explanation.
-8. Progress persists browser-local; on return the map shows prior mastery, clearly dated.
+3. Learner either types an Explanation or records a bounded push-to-talk Voice Turn.
+4. For voice input, the system transcribes the recording, deletes/releases the temporary
+   audio, and shows an editable transcript. The learner explicitly submits only after
+   reviewing it; transcription never changes mastery by itself.
+5. The system returns, in one structured response: an updated Mastery Assessment for the touched nodes (each with a quoted evidence snippet), any Misconceptions (each quoted), and one Curious Follow-up probe.
+6. The probe is always visible as text and may also play as a disclosed AI-generated voice.
+7. The Concept Mastery Map animates to the new states. The learner sees where they're `secure` vs `emerging` vs `insufficient_evidence`.
+8. Learner answers the probe with another typed or voice-derived Explanation. Repeat 4–7 for a few Turns.
+9. Learner ends the session and receives a Session Summary with quoted evidence for strengths, gaps to revisit, and a suggested next explanation.
+10. Progress persists browser-local; on return the map shows prior mastery, clearly dated.
 
 ### 3.4 Journey diagram
 
@@ -131,15 +138,20 @@ tests). It is always clearly labelled as simulated.
 flowchart TD
     A[Open app] --> B[See Topic + 6-8 nodes unassessed]
     B --> C[AI Learner asks starter question]
-    C --> D[Learner submits Explanation]
-    D --> E[Server calls Provider - Live or Replay]
-    E --> F[Structured result: assessments + misconceptions + probe]
-    F --> G[Mastery Map updates live]
-    G --> H{Continue?}
-    H -->|Yes| D
-    H -->|No| I[Request Session Summary]
-    I --> J[Summary quotes learner's own words]
-    J --> K[Progress saved browser-local]
+    C --> D{Input mode}
+    D -->|Type| E[Review text]
+    D -->|Push to talk| F[Transcribe bounded audio]
+    F --> E
+    E --> G[Learner explicitly submits Explanation]
+    G --> H[Server calls Provider - Live or Replay]
+    H --> I[Structured result: assessments + misconceptions + probe]
+    I --> J[Show probe text and optional AI speech]
+    J --> K[Mastery Map updates live]
+    K --> L{Continue?}
+    L -->|Yes| D
+    L -->|No| M[Request Session Summary]
+    M --> N[Summary quotes learner's own words]
+    N --> O[Progress saved browser-local]
 ```
 
 ---
@@ -153,7 +165,14 @@ stateDiagram-v2
     [*] --> Idle
     Idle --> TopicLoaded: load curated topic
     TopicLoaded --> AwaitingExplanation: AI Learner starter probe shown
-    AwaitingExplanation --> Assessing: learner submits Explanation
+    AwaitingExplanation --> Recording: learner starts push-to-talk
+    Recording --> Transcribing: learner stops recording
+    Recording --> AwaitingExplanation: learner cancels
+    Transcribing --> ReviewingTranscript: transcript returned
+    Transcribing --> TurnError: transcription or media error
+    ReviewingTranscript --> Assessing: learner confirms and submits transcript
+    ReviewingTranscript --> AwaitingExplanation: learner cancels or switches to typing
+    AwaitingExplanation --> Assessing: learner submits typed Explanation
     Assessing --> ProbeShown: valid structured result
     Assessing --> TurnError: validation or provider error
     TurnError --> AwaitingExplanation: retry or edit
@@ -167,33 +186,50 @@ stateDiagram-v2
 
 State invariants:
 
-- **`Assessing` and `Summarizing` are the only states that call the Provider.** Exactly one in-flight Provider call at a time; the submit control is disabled while in-flight.
+- **`Assessing` and `Summarizing` are the only states that call the mastery Provider.**
+  `Transcribing` may call the separate bounded audio transcription adapter. Exactly one
+  network operation is in flight at a time; submit and record controls are disabled.
+- `Recording`, `Transcribing`, and `ReviewingTranscript` never mutate the Concept Mastery
+  Map. Only a learner-confirmed transcript can become `TurnRequest.explanation`.
 - A Turn only advances to `ProbeShown` if the response **passes schema validation** (§6). A malformed response is a `TurnError`, never a silently-accepted result.
 - No state transition mutates the Concept Mastery Map except on a validated result.
 - Ending the session is always available from `AwaitingExplanation` and `ProbeShown`.
 
 ---
 
-## 5. The API boundary (two server route handlers)
+## 5. The API boundary (three server route handlers)
 
-Two narrow Next.js Route Handlers are the entire backend. The OpenAI key lives only in
+Three narrow Next.js Route Handlers are the entire backend. The OpenAI key lives only in
 their shared server-only provider module.
 
 ```mermaid
 sequenceDiagram
     participant B as Browser (client component)
-    participant R as Route Handler (/api/session/turn)
+    participant A as Audio Handler (/api/audio/transcribe)
+    participant R as Turn Handler (/api/session/turn)
     participant P as Provider (Live=OpenAI | Replay=fixture)
-    B->>R: POST TurnRequest (JSON)
+    opt Voice input in Live mode
+        B->>A: POST bounded audio blob
+        A-->>B: transcript text
+        Note over B: learner reviews/edits transcript
+    end
+    B->>R: POST confirmed TurnRequest (JSON)
     R->>R: validate TurnRequest (zod)
     R->>P: provider.assess(input)
     P-->>R: TurnResult (Live: Structured Outputs | Replay: fixture)
     R->>R: validate TurnResult against schema
-    R-->>B: 200 TurnResult (+ providerMode label)
+    opt spoken probe requested
+        R->>P: render exact probe text with TTS (Live) or fixture (Replay)
+    end
+    R-->>B: 200 TurnEnvelope (+ providerMode + optional probeAudio)
     Note over R: key never leaves server; errors mapped to safe codes
 ```
 
-- Endpoints (P0): `POST /api/session/turn` and `POST /api/session/summary`. That is all.
+- Endpoints (P0): `POST /api/audio/transcribe`, `POST /api/session/turn`, and
+  `POST /api/session/summary`. TTS is performed inside the turn handler only for the
+  server-generated probe, preventing an open arbitrary-speech endpoint.
+- `/api/audio/transcribe` exists only in Live mode. Replay exposes a deterministic sample
+  transcript action instead of sending microphone audio to OpenAI.
 - The route selects the Provider from server env (`SISHYAGURU_PROVIDER`), never from client input. A client cannot force Live mode or spend credits by crafting a request.
 - The route **always** echoes the active `providerMode` (`"live"` | `"replay"`) in its response so the UI can label it truthfully.
 
@@ -227,6 +263,7 @@ interface TurnRequest {
   explanation: string;             // learner's teaching text, 1..4000 chars
   priorStates: Record<string, MasteryState>; // current map, client-owned
   turnIndex: number;               // 0-based
+  outputMode: "text" | "text_and_audio"; // presentation preference, not mastery evidence
 }
 
 // ---- Response (also the OpenAI Structured Outputs schema) ----
@@ -252,6 +289,17 @@ interface TurnResult {
   };
 }
 
+interface TurnEnvelope {
+  result: TurnResult;
+  providerMode: "live" | "replay";
+  probeAudio: null | {
+    mediaType: "audio/mpeg";
+    dataBase64: string;             // exact probe.question only
+    disclosure: "AI-generated voice";
+  };
+  audioStatus: "not_requested" | "ready" | "unavailable" | "simulated";
+}
+
 interface SummaryResult {
   strengths: { nodeId: string; evidenceQuote: string; note: string }[];
   gaps: { nodeId: string; note: string }[];   // gaps need not quote (absence of evidence)
@@ -268,6 +316,8 @@ interface SummaryResult {
 4. Every `misconception.evidenceQuote` must be a verbatim substring of `explanation`; any failure rejects the whole result.
 5. `probe.targetsNodeId` ∈ `nodeIds`.
 6. On any structural failure the route returns a typed error; the client stays on the prior valid map.
+7. `probeAudio`, when present, is a rendering of the already-validated `probe.question`;
+   audio never becomes evidence and cannot change the structured mastery result.
 
 Rule 3 and 4 make **"quote the learner's own words for every judgment"** a hard,
 mechanically-checked invariant, not a prompt suggestion.
@@ -307,8 +357,14 @@ interface Provider {
   (`OPENAI_MODEL`, default `gpt-5.6`), `store: false`, and the schema above through
   `text.format` (prefer the JavaScript SDK Zod helper so runtime and API schemas share
   one source).
+- Optional Live voice input uses `gpt-4o-mini-transcribe` on a bounded recording. The
+  confirmed transcript then enters the same GPT-5.6 contract as typed text.
+- Optional Live spoken output uses `gpt-4o-mini-tts` with a built-in voice to render only
+  the validated probe question. A TTS failure returns the text probe with
+  `audioStatus: "unavailable"`; it does not roll back the mastery result.
 - **Replay** provider returns pre-recorded fixtures keyed by `(topicId, turnIndex)`,
-  passing through the identical validation.
+  passing through the identical validation. It may return a versioned deterministic
+  probe-audio fixture labelled `simulated`, but never calls an OpenAI audio API.
 
 **Replay truthfulness rules (non-negotiable):**
 
@@ -316,6 +372,17 @@ interface Provider {
 2. Replay data is **never** presented, logged, screenshotted, or submitted as a live GPT-5.6 result.
 3. The active mode is server-authoritative and surfaced in `providerMode`; the UI badge reads directly from it.
 4. Fixtures are hand-authored to be *plausible and pedagogically honest*, not cherry-picked to flatter.
+5. Replay microphone transcription is unavailable; the UI offers a clearly labelled
+   sample transcript so the full credential-free text journey remains deterministic.
+
+### 8.1 Why bounded audio, not Realtime, in P0
+
+The learning loop is deliberately turn-based and requires learner review before evidence
+is assessed. OpenAI's request-based audio APIs are designed for bounded transcription
+and generated speech; Realtime sessions are designed for continuous low-latency audio.
+Realtime would add WebRTC session credentials, turn detection, interruption handling,
+and a second conversational state machine without improving the core evidence contract.
+It is therefore an explicit post-P0 option, not a hidden dependency.
 
 ---
 
@@ -327,11 +394,14 @@ interface Provider {
   own quoted words (enforced by §6.1).
 - **Uncertainty allowed.** `insufficient_evidence` is always available and preferred over overclaiming.
 - **Gentle misconception framing.** "Worth double-checking" not "wrong".
-- **No PII solicited.** The app never asks for name, email, or identity. Explanations
-  are topic teaching text.
+- **No PII solicited.** The app never asks for name, email, or identity. Because a
+  learner can still type or speak personal information voluntarily, the UI warns against
+  including it and the server never persists or logs explanation or transcript content.
 - **Confirmation before destructive/outward actions.** Clearing saved progress requires
   explicit confirmation. There is no external publishing in P0.
 - **Content scope.** One curated academic Topic; no open-ended chat, no user-supplied topics in P0.
+- **No biometric or affect inference.** Audio is used only to create a transcript; the
+  product does not identify speakers, infer emotion, diagnose fluency, or score accent.
 
 ---
 
@@ -346,13 +416,23 @@ interface Provider {
 - In Live mode, the current explanation and minimum trusted topic/session context are
   sent to OpenAI for assessment with `store: false`. The UI discloses this before use
   and tells learners not to enter personal or sensitive information.
+- If the learner chooses voice input, one bounded audio recording is sent to OpenAI for
+  transcription. The application does not persist or log audio, releases the browser
+  blob after transcription/cancellation, and shows the transcript for correction before
+  submission. It does not claim that Audio API processing is local.
+- Spoken probe audio contains only the AI Learner's validated question and is not saved
+  to progress. The UI clearly discloses that the voice is AI-generated.
 - The OpenAI key is server-only and never reaches the browser, logs, fixtures, or Git.
 
 ---
 
 ## 11. Accessibility (P0 baseline, not deferred)
 
-- Keyboard-operable throughout: explanation textarea, submit, end-session, clear-progress.
+- Keyboard-operable throughout: explanation textarea, push-to-talk control, transcript
+  review, submit, audio play/pause/stop, end-session, and clear-progress.
+- Text remains a complete first-class path. Every recording has a visible transcript;
+  every spoken probe has identical visible text. Microphone denial or unsupported media
+  never blocks the learning loop.
 - The Concept Mastery Map is **not colour-only**: each node shows a text label + an
   icon/shape per state, plus colour. State is announced to screen readers via
   `aria-label` (e.g. "Evaporation: developing").
@@ -369,6 +449,9 @@ interface Provider {
   `turnIndex`, latency ms, result status (`ok` | `validation_error` | `provider_error`),
   and token/cost estimate for Live calls.
 - **Never logged:** the OpenAI key, the full verbatim explanation, or evidence quotes.
+- **Never logged:** raw audio, transcript text, generated speech bytes, or microphone
+  permission state. Audio logs contain only bounded metadata such as duration, byte size,
+  MIME family, latency, adapter status, and a random request id.
   Log an explanation **length** and a hash if correlation is ever needed — never the text.
 - A client-visible provider badge and turn latency indicator for demo transparency.
 - No third-party analytics or telemetry in P0.
@@ -382,12 +465,16 @@ interface Provider {
 | Replay turn round-trip | < 150 ms (local fixture, no network) |
 | Live turn round-trip (p50) | < 6 s |
 | Live turn round-trip (p95) | < 12 s (else show timeout error state) |
+| Voice transcription | recording ≤ 60 s and ≤ 5 MB; target p95 < 8 s after stop |
+| Spoken probe generation | probe ≤ 500 chars; target p95 < 5 s; text appears first |
 | Map re-render after result | < 100 ms |
-| Live cost per turn | Bounded by `explanation` ≤ 4000 chars + capped `max_tokens`; est. ≤ ~1 model call per turn, no fan-out |
-| Live calls per session | 1 per Turn + 1 for Summary; no background/polling calls |
+| Live cost per turn | Bounded by `explanation` ≤ 4000 chars + capped output; exactly 1 mastery call, plus only the explicitly requested audio stages |
+| Live calls per typed turn | 1 mastery call; optional 1 TTS call; no background/polling |
+| Live calls per voice turn | 1 transcription + 1 mastery + optional 1 TTS call |
 
-Cost control: single call per user action, hard `max_tokens` cap, no retries beyond one,
-Replay is the default provider so demos and tests spend nothing.
+Cost control: one bounded call per explicit stage, hard duration/byte/character and
+`max_output_tokens` caps, no automatic retries, and no background listening. Replay is
+the default provider so demos and tests spend nothing.
 
 ---
 
@@ -398,8 +485,12 @@ Replay is the default provider so demos and tests spend nothing.
 | `INVALID_INPUT` | Empty/oversize explanation, bad topic/node ids | Inline message, keep text, no Provider call |
 | `PROVIDER_TIMEOUT` | Live call exceeded budget | "The AI Learner is thinking too slowly — try again." Prior map intact. |
 | `PROVIDER_ERROR` | OpenAI error / network | Same safe message + suggest Replay mode. Key/details never surfaced. |
-| `SCHEMA_INVALID` | Result failed §6.1 validation | Treated as a failed turn; prior map intact; one retry offered. |
+| `SCHEMA_INVALID` | Result failed §6.1 validation | Reject the complete result; prior map intact; offer an explicit user-initiated retry. |
 | `RATE_LIMITED` | OpenAI 429 | Backoff message; Replay suggested. |
+| `MICROPHONE_DENIED` | Browser permission denied | Explain how to enable it; keep the complete text path available. |
+| `AUDIO_INVALID` | Unsupported MIME, empty audio, >60 s, or >5 MB | Reject before provider call; keep prior transcript/map. |
+| `TRANSCRIPTION_ERROR` | Audio adapter timeout or failure | Keep audio out of logs; offer record again or type. |
+| `SPEECH_UNAVAILABLE` | TTS failed after valid assessment | Show the text probe and valid mastery update; offer replay audio later. |
 
 No error ever leaks the key, stack traces, model internals, or raw provider payloads to the client.
 
@@ -426,15 +517,18 @@ No error ever leaks the key, stack traces, model internals, or raw provider payl
 - **Truthfulness test:** Replay responses carry the simulated label; `providerMode` matches server env.
 - **Accessibility smoke:** map exposes non-colour state + aria labels; keyboard path works.
 - **Boundary security test:** key absent from client bundle and responses; explanation absent from logs.
+- **Voice boundary tests:** MIME/duration/byte limits, permission denial, cancellation,
+  no auto-submit, transcript edit-before-submit, audio absent from logs/storage, exact
+  probe-to-speech binding, AI-voice disclosure, and text fallback.
 
 ### 15.3 Milestones
 
 | Milestone | Content |
 | --- | --- |
-| **M0 — Architecture pack** | This blueprint + system architecture + 4 ADRs + PRD (this deliverable). |
+| **M0 — Architecture pack** | This blueprint + system/voice architecture + 5 ADRs + PRD (this deliverable). |
 | **M1 — Contract & fixtures** | TS types, zod schema, curated Topic, Replay fixtures, contract tests green. |
 | **M2 — Golden loop (Replay)** | Full journey works end-to-end in Replay: teach → assess → probe → map → summary → browser-local progress. |
-| **M3 — Live provider** | One bounded live GPT-5.6 turn behind the same contract; provider parity test green. |
+| **M3 — Live providers** | One bounded live GPT-5.6 turn plus one reviewed voice turn and spoken probe; provider and evidence gates green. |
 | **M4 — Hardening** | Accessibility, error states, observability, security boundary tests green; demo script. |
 
 ---
@@ -453,12 +547,17 @@ A P0 build is acceptable only when **all** hold:
 8. The OpenAI key never appears in the client bundle, responses, logs, fixtures, or Git.
 9. The app is keyboard-operable and the map conveys state without relying on colour alone.
 10. The product shares no logic with Incident Commander AI.
+11. In Live mode a learner can record a bounded Voice Turn, review/edit its transcript,
+    explicitly submit it through the same mastery contract, and hear the exact probe as
+    a clearly disclosed AI-generated voice.
+12. The complete text path works without microphone permission; Replay makes no OpenAI
+    audio calls and labels all audio/transcript fixtures as simulated.
 
 ## 17. Definition of done (P0)
 
 - All §16 acceptance criteria pass.
 - Lint, typecheck, unit/contract tests, build, and a browser smoke of the golden loop all green.
-- The four ADRs are recorded and match the code.
+- The five ADRs are recorded and match the code.
 - No secret in Git history; `.env.example` documents required vars with empty values.
 - README and project status docs reflect reality; no unbuilt capability is claimed as built.
 
@@ -474,7 +573,9 @@ working:
 - Queues, background jobs, microservices, vector database, or RAG.
 - External calendar, email, sharing, or publishing.
 - Certified scores, credentials, transcripts, or diagnoses.
-- Voice, multiplayer, or mobile-native clients.
+- Continuous/full-duplex Realtime voice, wake words, background listening, telephony,
+  custom voice cloning, speaker identification, emotion/accent scoring, multiplayer, or
+  mobile-native clients.
 
 Adding any of these to satisfy P0 is a STOP condition. P0 is the smallest architecture
 that safely satisfies the golden loop.
@@ -487,3 +588,10 @@ that safely satisfies the golden loop.
   use the Responses API `text.format` shape and the JavaScript SDK Zod helper.
 - [Responses migration differences](https://developers.openai.com/api/docs/guides/migrate-to-responses#additional-differences):
   Responses are stored by default, so P0 explicitly sets `store: false`.
+- [Audio and speech](https://developers.openai.com/api/docs/guides/audio) and
+  [Realtime and audio](https://developers.openai.com/api/docs/guides/realtime): use
+  request-based audio for bounded turns; reserve Realtime for continuous low-latency use.
+- [Speech to text](https://developers.openai.com/api/docs/guides/speech-to-text): bounded
+  transcription via `gpt-4o-mini-transcribe`.
+- [Text to speech](https://developers.openai.com/api/docs/guides/text-to-speech): render
+  probe text with `gpt-4o-mini-tts` and disclose that the voice is AI-generated.

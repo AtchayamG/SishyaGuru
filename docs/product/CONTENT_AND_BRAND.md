@@ -25,7 +25,11 @@ The core of SishyaGuru is the AI persona. It must strictly adhere to the followi
 
 ## 5. Required Copy Elements
 - **Privacy copy:**
-  > "Your progress stays in this browser. In Live mode, your current explanation and the minimum learning context are sent to OpenAI for assessment. Do not include personal or sensitive information. Clear session removes local progress."
+  > "Your progress stays in this browser. In Live mode, your confirmed explanation and the minimum learning context are sent to OpenAI for assessment. If you choose voice, a bounded recording is sent to OpenAI for transcription, is not saved by SishyaGuru, and is shown back as editable text before you submit it. Do not include personal or sensitive information. Clear session removes local progress."
+- **AI voice disclosure:**
+  > "The voice you hear is AI-generated. The same question is always available as text."
+- **Microphone first-use copy:**
+  > "Microphone access is optional and begins only when you press Record. SishyaGuru does not listen in the background. You can review or edit every transcript before submitting."
 - **Provenance Labels (Truthful Disclosure):** 
   Every session must clearly indicate its execution context in the header:
   - `[ Live GPT-5.6 ]`
@@ -34,3 +38,5 @@ The core of SishyaGuru is the AI persona. It must strictly adhere to the followi
 ## 6. Content Tone
 - **UI Copy:** Concise, objective, directive. (e.g., "Begin Teaching", "Concept Map", "Mastery Evidence").
 - **AI Dialogue:** Conversational, inquisitive, respectful, intellectually humble.
+- **Voice delivery:** Calm, curious and concise. Spoken output must match the visible
+  probe text; do not add improvised filler, emotional inference, or praise not in the probe.

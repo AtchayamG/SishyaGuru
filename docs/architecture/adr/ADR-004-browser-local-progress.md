@@ -19,6 +19,10 @@ progress or explanations. The learner owns their data and can clear it (with an 
 confirmation, per blueprint §9). Returning users see prior mastery clearly dated as
 formative history.
 
+Raw recordings, generated probe audio and microphone permission state are never stored
+in Progress. A learner-confirmed transcript becomes ordinary explanation text only after
+explicit submission and follows the same bounded browser-session rules.
+
 ## Rationale (the ladder)
 
 - **Native platform feature over a service:** `localStorage` is exactly a per-user,

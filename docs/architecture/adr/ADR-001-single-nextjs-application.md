@@ -17,8 +17,10 @@ The only hard secret is the OpenAI key, which must never reach the browser.
 ## Decision
 
 Ship P0 as a **single Next.js 15+ App Router application in strict TypeScript**. Use one
-family of Route Handlers (`/api/session/turn`, `/api/session/summary`) as the entire
-backend, executing server-side so the key stays private. Use **no** database,
+family of Route Handlers (`/api/audio/transcribe`, `/api/session/turn`,
+`/api/session/summary`) as the entire backend, executing server-side so the key stays
+private. Audio remains a bounded adapter inside the same deployment, not a separate
+voice service. Use **no** database,
 authentication, session store, queue, background worker, microservice, vector database,
 or external calendar.
 

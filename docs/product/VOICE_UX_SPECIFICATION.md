@@ -5,7 +5,8 @@
 - **Additive, Not Replacive:** Voice features (push-to-talk teaching and spoken AI follow-ups) are completely optional and do not replace the existing text interface. The text-only flow must always be able to complete the full golden path.
 - **Strict Privacy & Transparency:** 
   - Do not imply continuous conversation or background listening.
-  - No emotion detection, biometric analysis, or recording storage is performed.
+  - The implementation must not perform emotion detection, biometric analysis, or
+    recording storage.
   - Do not claim perfect transcription; always allow text editing.
   - Explicitly disclose that the AI voice is generated.
 - **Professional Aesthetics:** Keep the UI minimal and academic. Avoid decorative waveforms unless they explicitly and accessibly communicate recording levels or status.
@@ -25,7 +26,9 @@ The voice interaction follows a strict state machine to prevent accidental submi
 10. **Recoverable Error:** Handles edge cases such as microphone permission denied, unsupported browser, or transcription failure.
 
 ## 3. Audio Controls & Semantics
-- **Playback Controls:** The AI's spoken response must include accessible controls: Play/Pause/Replay, Mute, Speed (e.g., 1x, 1.25x), and Stop.
+- **Playback Controls:** The AI's spoken response must include accessible Play/Pause,
+  Replay, Mute, and Stop controls. Playback speed (for example 1x and 1.25x) is a P1
+  enhancement and must not delay the complete P0 voice loop.
 - **Recording Semantics:** Provide clear actions to cancel the current recording or delete/clear the transcript before submission.
 - **Permission Denied/Unsupported Paths:** If the microphone is denied or unsupported, gracefully fall back to the text-only interface with a clear, non-intrusive explanation.
 

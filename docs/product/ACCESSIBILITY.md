@@ -26,3 +26,11 @@
 - **AC3:** Screen readers correctly announce dynamic updates in the Chat and Mastery panels using appropriate `aria-live` regions (`polite` for mastery updates, `assertive` for errors).
 - **AC4:** Zooming the page to 200% on desktop does not result in loss of content or functionality, and does not require horizontal scrolling (content reflows to single column).
 - **AC5:** Minimum target size for all interactive elements is at least 24x24 CSS pixels.
+- **AC6:** Push-to-talk, stop/cancel, transcript review, submit, play/pause/replay, mute,
+  speed and stop are keyboard-operable with visible focus and programmatic names.
+- **AC7:** Recording/transcribing/review/playing states are announced concisely; timers
+  and limit warnings are available as text and never depend on animation, waveform, or color.
+- **AC8:** Every spoken probe has identical visible text. Text-only use completes the
+  golden path when microphone permission, recording, transcription or playback is unavailable.
+- **AC9:** The interface visibly and programmatically discloses AI-generated speech and
+  respects `prefers-reduced-motion` for recording/playback indicators.

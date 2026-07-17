@@ -7,8 +7,8 @@
 
 - **Category:** Education.
 - **One-line:** SishyaGuru is a reverse-teaching mastery coach where students teach an AI
-  learner, answer its curious questions, and watch their understanding grow through a live
-  concept mastery map.
+  learner by typing or speaking, answer its curious written or spoken questions, and
+  watch their understanding grow through a live concept mastery map.
 - **Status:** Pre-production. No working product or live GPT-5.6 result is claimed.
 
 ---
@@ -29,6 +29,11 @@ learner explains, SishyaGuru surfaces a **live Concept Mastery Map**: each conce
 `secure`, `developing`, `emerging`, or `insufficient_evidence`, every judgment **quoting
 the learner's own words**. At the end, a formative Session Summary shows strengths, gaps,
 and a suggested next explanation — explicitly *guidance, not a grade*.
+
+Voice is an optional interface over this same contract: a bounded push-to-talk recording
+is transcribed, shown for learner review/editing, and submitted only after explicit
+confirmation. The validated AI probe is always visible as text and may also be rendered
+as a disclosed AI-generated voice. Text remains a complete first-class path.
 
 ## 3. Who it's for
 
@@ -53,19 +58,24 @@ requirement, not a preference.
 | P0-2 | Learner submits an Explanation and receives, via strict Structured Outputs, per-node Mastery Assessments, zero-or-more Misconceptions, and **one** Curious Follow-up probe. |
 | P0-3 | Every mastery/misconception judgment quotes the learner's **verbatim** words; enforced server-side. |
 | P0-4 | Uncertainty (`insufficient_evidence`) is reachable and shown honestly. |
-| P0-5 | A Session Summary quotes the learner's words and carries the formative-not-a-grade disclaimer. |
+| P0-5 | A Session Summary quotes the learner's words for every claimed strength, may name absence-of-evidence gaps without inventing quotes, and carries the formative-not-a-grade disclaimer. |
 | P0-6 | Progress persists **browser-local**, user-clearable with confirmation. |
 | P0-7 | Clearly-labelled deterministic **Replay** mode runs the whole loop with no credential; never presented as a live result. |
 | P0-8 | The OpenAI key is server-only; never in the client bundle, responses, logs, fixtures, or Git. |
 | P0-9 | Keyboard-operable; map conveys state without relying on colour alone. |
 | P0-10 | One bounded **live GPT-5.6** turn behind the same contract (proof of concept). |
+| P0-11 | Optional push-to-talk input transcribes a ≤60-second/≤5-MB recording, requires transcript review/edit and explicit submit, and never auto-submits. |
+| P0-12 | The exact validated probe can play through a clearly disclosed AI-generated voice while identical text and accessible playback controls remain visible. |
+| P0-13 | Replay invokes no OpenAI audio API; simulated audio/transcript fixtures are labelled, and the text-only golden path works without microphone permission. |
 
 ## 6. Non-goals (P0)
 
 Accounts, auth, database, multi-user, server-side history, multiple/user-authored topics,
 open-ended chat, queues/workers/microservices, vector DB/RAG, external calendar/email,
-sharing/publishing, certified scores or credentials or diagnoses, voice, multiplayer,
-mobile-native. See blueprint §18. None of these may be implied as working.
+sharing/publishing, certified scores or credentials or diagnoses, continuous/full-duplex
+Realtime voice, wake words, background listening, telephony, custom voice cloning,
+speaker/emotion/accent analysis, multiplayer, or mobile-native clients. See blueprint
+§18. None of these may be implied as working.
 
 ## 7. User stories
 
@@ -74,6 +84,8 @@ mobile-native. See blueprint §18. None of these may be implied as working.
 - *As a learner*, when I'm vague, the system tells me it doesn't have enough to judge —
   rather than inventing a grade.
 - *As a learner*, the AI Learner's curious question pushes me to explain the part I glossed over.
+- *As a learner*, I can teach aloud, correct the transcript before submitting, and hear
+  the AI Learner's exact visible question spoken back to me.
 - *As a learner*, I get an honest end-of-session summary that is guidance, not a verdict.
 - *As a judge*, I run the full experience with no API key and can tell it's simulated.
 
@@ -82,12 +94,16 @@ mobile-native. See blueprint §18. None of these may be implied as working.
 - Golden loop completes end-to-end in Replay in under a few seconds per turn with zero cost.
 - 100% of shown mastery/misconception judgments carry a verbatim learner quote (enforced, so structurally 100%).
 - At least one live GPT-5.6 turn demonstrated behind the identical contract.
+- One bounded live voice turn demonstrates record → transcribe → review/edit → explicit
+  submit → mastery update → spoken probe, with text equivalence and AI-voice disclosure.
 - Zero secrets in bundle/logs/Git (verified by test).
 
 ## 9. Experience principles
 
 - **Honest over flattering.** Prefer "not enough evidence" to a confident wrong grade.
 - **In your own words.** Every judgment is cited to the learner's text.
+- **Speech becomes learner-owned text.** A transcript is candidate input until the
+  learner reviews and explicitly submits it; audio itself is never mastery evidence.
 - **Curious, not authoritative.** The AI plays a novice, never a grader.
 - **Formative, never certified.** No score of record, credential, or diagnosis.
 - **Accessible by default.** Keyboard + non-colour state + screen-reader announcements.

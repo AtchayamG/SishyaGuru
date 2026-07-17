@@ -9,6 +9,8 @@ Source of truth: `docs/blueprint/SISHYAGURU_MASTER_BLUEPRINT_v1.md`.
 - Never expose API keys to the browser, logs, fixtures, screenshots, or Git.
 - Label deterministic replay data as simulated; never present it as a live GPT-5.6 result.
 - Treat mastery estimates as learning guidance, not certified grades or diagnoses.
+- Treat voice as an optional bounded interface: no background listening, no auto-submit,
+  learner-reviewed transcripts only, AI-generated speech disclosure, and full text fallback.
 - Require user confirmation before destructive actions or external publication.
 - Keep P0 dependency-light: one Next.js application, browser-local progress, no database or authentication until evidence requires them.
 - Run the documented lint, typecheck, test, build, and browser smoke gates before calling a milestone complete.
@@ -27,4 +29,6 @@ Source of truth: `docs/blueprint/SISHYAGURU_MASTER_BLUEPRINT_v1.md`.
 
 - Name: SishyaGuru
 - Tagline: You teach. AI learns. You master.
-- Description: SishyaGuru is a reverse-teaching mastery coach where students teach an AI learner, answer its curious questions and watch their understanding grow through a live concept mastery map.
+- Description: SishyaGuru is a reverse-teaching mastery coach where students teach an AI
+  learner by typing or speaking, answer its curious written or spoken questions, and
+  watch their understanding grow through a live concept mastery map.

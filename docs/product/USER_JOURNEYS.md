@@ -4,9 +4,19 @@
 **Objective:** The user actively teaches the AI a curated concept to solidify their own understanding.
 
 *   **Step 1:** The learner arrives at the credential-free P0 topic page. The AI persona introduces the topic and asks a single, foundational question to start the session.
-*   **Step 2:** User inputs an explanation (teaching the AI).
+*   **Step 2:** The learner types an explanation or activates push-to-talk for a bounded voice turn.
+*   **Step 2a (voice):** The recording is transcribed and released; the learner reviews,
+    edits, and explicitly submits the visible transcript. It never submits automatically.
 *   **Step 3:** AI processes the input and responds with an honest, curious follow-up question. It asks exactly *one* focused question at a time.
 *   **Step 4:** The loop repeats, driving deeper into the concept tree.
+*   **Step 5:** The AI's one follow-up remains visible as text and may also play through
+    an explicitly disclosed AI-generated voice with accessible playback controls.
+
+## 1.1 Voice unavailable path
+
+If microphone permission is denied, MediaRecorder is unsupported, transcription fails,
+or speech cannot play, the interface explains the recoverable state and returns focus to
+the text input. No mastery state changes until a confirmed text explanation succeeds.
 
 ## 2. Mastery Updates and Evidence
 **Objective:** The user receives real-time, transparent feedback on their teaching efficacy.
