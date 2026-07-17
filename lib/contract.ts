@@ -49,13 +49,20 @@ export const ErrorCodeSchema = z.enum([
 ]);
 export type ErrorCode = z.infer<typeof ErrorCodeSchema>;
 
+export const ApiFailureSchema = z.strictObject({
+  ok: z.literal(false),
+  code: ErrorCodeSchema,
+  message: z.string().min(1).max(240),
+});
+export type ApiFailure = z.infer<typeof ApiFailureSchema>;
+
 // ---- Voice transcription boundary (Live only) ----
 
 export const TranscriptionSuccessSchema = z.strictObject({
   ok: z.literal(true),
   providerMode: z.literal("live"), // server-authoritative provenance
   candidateOnly: z.literal(true), // cannot mutate mastery until explicit submit
-  transcript: z.string().min(1), // editable candidate, never auto-submitted
+  transcript: z.string().min(1).max(4000), // editable candidate, never auto-submitted
   media: ServerAudioMetadataSchema,
 });
 export type TranscriptionSuccess = z.infer<typeof TranscriptionSuccessSchema>;
@@ -63,7 +70,7 @@ export type TranscriptionSuccess = z.infer<typeof TranscriptionSuccessSchema>;
 export const TranscriptionFailureSchema = z.strictObject({
   ok: z.literal(false),
   providerMode: z.literal("live"),
-  code: z.enum(["AUDIO_INVALID", "TRANSCRIPTION_ERROR"]),
+  code: z.enum(["AUDIO_INVALID", "TRANSCRIPTION_ERROR", "RATE_LIMITED"]),
   message: z.string().min(1), // safe, stable, no raw provider details
 });
 export type TranscriptionFailure = z.infer<typeof TranscriptionFailureSchema>;
@@ -154,6 +161,16 @@ export const TurnEnvelopeSchema = z.discriminatedUnion("audioStatus", [
   }),
 ]);
 export type TurnEnvelope = z.infer<typeof TurnEnvelopeSchema>;
+
+export const TurnApiSuccessSchema = z.strictObject({
+  ok: z.literal(true),
+  envelope: TurnEnvelopeSchema,
+});
+export const TurnApiEnvelopeSchema = z.union([
+  TurnApiSuccessSchema,
+  ApiFailureSchema,
+]);
+export type TurnApiEnvelope = z.infer<typeof TurnApiEnvelopeSchema>;
 
 // ---- Session summary ----
 
