@@ -56,7 +56,8 @@ Each validated assessment is graded on:
 - deterministic replay equality.
 - transcript never auto-submits;
 - exact probe-to-speech binding and AI-voice disclosure;
-- no audio/transcript persistence or biometric/affect inference.
+- no raw-audio or unsubmitted-candidate persistence; explicitly submitted reviewed text is
+  disclosed browser-local progress until Clear; no biometric/affect inference.
 
 Safety and grounding are hard gates. A fluent response that invents evidence fails.
 

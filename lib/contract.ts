@@ -94,7 +94,7 @@ export const TurnRequestSchema = z.strictObject({
     }),
   explanation: z.string().min(1).max(4000),
   priorStates: z.record(z.string(), MasteryStateSchema), // current map, client-owned
-  turnIndex: z.number().int().nonnegative(), // 0-based
+  turnIndex: z.number().int().min(0).max(2), // frozen P0 has exactly three turns
   outputMode: z.enum(["text", "text_and_audio"]), // presentation preference, not evidence
 });
 export type TurnRequest = z.infer<typeof TurnRequestSchema>;

@@ -12,7 +12,8 @@
 - Abort controllers plus generation checks discard late responses after clear or unmount.
 - Live responses require server-authoritative provider provenance.
 - Recordings stop at 60 seconds or 5 MB, expose elapsed time, support explicit discard,
-  release microphone tracks and never auto-submit a transcript.
+  release microphone tracks and never auto-submit a transcript. Raw audio and unsubmitted
+  candidates are ephemeral; submitted reviewed text is disclosed browser-local progress.
 - One native audio control owns disclosed AI-probe playback.
 - Summary request bodies are stream-bounded before JSON parsing.
 

@@ -3,7 +3,7 @@
 - Product: SishyaGuru, a reverse-teaching mastery coach.
 - Tagline: You teach. AI learns. You master.
 - Workspace: `D:\Work\Codex\Hackathon Projects\OpenAI Hackathon\SishyaGuru`.
-- Phase: M1-M4 verified; M5 submission hardening is active.
+- Phase: M1-M5 verified; M6 publication and submission assets are active.
 - Primary category: Education.
 - Core constraint: the project must be unique and substantially different from Incident Commander AI.
 - Frozen P0: the Water Cycle with eight trusted concepts, evidence-bound mastery
@@ -32,10 +32,13 @@
   cancellation, strict provenance, streamed body limits, and fail-closed validation.
   A real application-route smoke proved the GPT-5.6 turn and the TTS-to-WebM-to-
   transcription chain without logging secrets or learner content.
-- Current gates: lint, strict typecheck, 33 unit/domain tests, production build, 9 Replay
+- M5 evidence: streamed request limits, server turn budget, exact privacy disclosure,
+  response security headers, corrected responsive semantics, concise live announcements,
+  Axe, keyboard-only and 200%-equivalent responsive coverage. Public deployment is
+  intentionally Replay-only with no OpenAI key.
+- Current gates: lint, strict typecheck, 35 unit/domain tests, production build, 12 Replay
   browser tests and 7 Live browser tests pass. `npm audit --audit-level=high` reports only
   a moderate transitive PostCSS advisory whose forced fix would cross a breaking Next.js
   downgrade; no forced fix was applied.
-- Next: complete M5 accessibility/security/visual checks, then public repo, deployment,
-  demo capture and Devpost submission evidence. Do not add database, auth, queues, RAG,
-  multiple topics or Realtime.
+- Next: public repo, Replay-only deployment, final media and Devpost submission evidence.
+  Do not add database, auth, queues, RAG, multiple topics or Realtime.

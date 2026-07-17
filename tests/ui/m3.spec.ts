@@ -91,15 +91,16 @@ test.describe("M3 deterministic Replay", () => {
   test("keeps every workspace view reachable without horizontal overflow on mobile and tablet", async ({ page }) => {
     for (const viewport of [
       { width: 390, height: 844 },
+      { width: 640, height: 800 },
       { width: 820, height: 900 },
     ]) {
       await page.setViewportSize(viewport);
       await page.reload();
       for (const tab of ["Concept Map", "Conversation", "Feedback"]) {
-        const control = page.getByRole("tab", { name: tab });
+        const control = page.getByRole("button", { name: tab });
         await expect(control).toBeVisible();
         await control.click();
-        await expect(page.getByRole("tabpanel", { name: tab })).toBeVisible();
+        await expect(page.getByLabel(tab)).toBeVisible();
       }
       expect(
         await page.evaluate(
@@ -107,5 +108,21 @@ test.describe("M3 deterministic Replay", () => {
         ),
       ).toBe(false);
     }
+  });
+
+  test("completes the Replay teaching loop with keyboard activation only", async ({ page }) => {
+    await page.goto("/");
+    for (let turn = 0; turn < 3; turn += 1) {
+      const sample = page.getByRole("button", { name: "Use Sample Explanation" });
+      await sample.focus();
+      await page.keyboard.press("Enter");
+      const submit = page.getByRole("button", { name: "Submit Explanation" });
+      await submit.focus();
+      await page.keyboard.press("Enter");
+    }
+    const end = page.getByRole("button", { name: "End Session" });
+    await end.focus();
+    await page.keyboard.press("Enter");
+    await expect(page.getByRole("heading", { name: "Session Summary" })).toBeVisible();
   });
 });

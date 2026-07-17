@@ -89,8 +89,10 @@ Prove that the reverse-teaching loop is deterministic at its boundaries, honest 
 - Browser bundle search for API key names and known secret values.
 - Prompt-injection, XSS, PII-shaped text, oversized input and malformed provider fixtures.
 - Confirm server logs do not include raw learner explanations.
-- Confirm raw audio, transcript text, generated speech bytes and permission state never
-  enter logs, browser progress, fixtures or server storage.
+- Confirm raw audio, unsubmitted transcript candidates, generated speech bytes and
+  permission state never enter logs, browser progress, fixtures or server storage.
+  Confirm explicitly submitted reviewed text enters only disclosed browser-local progress
+  and is removed by Clear.
 - Fuzz MIME, extension, byte size, duration metadata, cancellation and arbitrary TTS input.
 
 ## Golden path acceptance

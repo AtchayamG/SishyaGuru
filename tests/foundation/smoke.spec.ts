@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
 test("foundation shell renders the three-region workspace honestly", async ({
   page,
@@ -8,9 +9,9 @@ test("foundation shell renders the three-region workspace honestly", async ({
   await expect(page.getByRole("heading", { level: 1, name: "SishyaGuru" })).toBeVisible();
   await expect(page.getByText("Provider: Simulated (Replay mode)")).toBeVisible();
 
-  await expect(page.getByRole("tabpanel", { name: "Concept Map" })).toBeVisible();
-  await expect(page.getByRole("tabpanel", { name: "Conversation" })).toBeVisible();
-  await expect(page.getByRole("tabpanel", { name: "Feedback" })).toBeVisible();
+  await expect(page.getByLabel("Concept Map")).toBeVisible();
+  await expect(page.getByLabel("Conversation")).toBeVisible();
+  await expect(page.getByLabel("Feedback")).toBeVisible();
 });
 
 test("voice capability is detected without requesting microphone permission", async ({
@@ -41,4 +42,20 @@ test("no server secret names leak into the page", async ({ page }) => {
   const response = await page.goto("/");
   const html = (await response?.text()) ?? "";
   expect(html).not.toContain("OPENAI_API_KEY");
+});
+
+test("deployment responses include the hardened browser boundary", async ({ request }) => {
+  const response = await request.get("/");
+  expect(response.headers()["x-content-type-options"]).toBe("nosniff");
+  expect(response.headers()["x-frame-options"]).toBe("DENY");
+  expect(response.headers()["permissions-policy"]).toContain("microphone=(self)");
+  expect(response.headers()["content-security-policy"]).toContain("frame-ancestors 'none'");
+});
+
+test("Replay shell has no automated WCAG A or AA violations", async ({ page }) => {
+  await page.goto("/");
+  const results = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
+    .analyze();
+  expect(results.violations).toEqual([]);
 });

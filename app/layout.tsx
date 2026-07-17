@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SishyaGuru",
+  title: "SishyaGuru — Reverse-Teaching Mastery Coach",
   description:
-    "You teach. AI learns. You master. Reverse-teaching mastery coach (pre-production foundation).",
+    "Teach an AI learner, answer its curious questions, and grow an evidence-backed concept mastery map.",
 };
 
 export default function RootLayout({

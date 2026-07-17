@@ -4,6 +4,7 @@ import { getServerEnv } from "@/lib/env";
 import { transcribeLiveAudio } from "@/lib/server/audio-provider";
 import { getOpenAIClient } from "@/lib/server/openai-client";
 import { allowRequest, requestKey } from "@/lib/server/rate-limit";
+import { readBoundedBytes } from "@/lib/server/bounded-json";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -29,7 +30,12 @@ export async function POST(request: Request) {
         { status: 413 },
       );
     }
-    const form = await request.formData();
+    const bytes = await readBoundedBytes(request, MAX_AUDIO_BYTES + 128 * 1024);
+    const form = await new Request(request.url, {
+      method: "POST",
+      headers: { "content-type": request.headers.get("content-type") ?? "" },
+      body: bytes ? Uint8Array.from(bytes).buffer : null,
+    }).formData();
     const audio = form.get("audio");
     if (!(audio instanceof File)) {
       return NextResponse.json(
@@ -39,10 +45,18 @@ export async function POST(request: Request) {
     }
     const result = await transcribeLiveAudio(audio, getOpenAIClient());
     return NextResponse.json(result, { status: result.ok ? 200 : 422 });
-  } catch {
+  } catch (error) {
     return NextResponse.json(
-      { ok: false, providerMode: "live", code: "AUDIO_INVALID", message: "The recording could not be read." },
-      { status: 400 },
+      {
+        ok: false,
+        providerMode: "live",
+        code: "AUDIO_INVALID",
+        message:
+          error instanceof RangeError
+            ? "The recording is too large."
+            : "The recording could not be read.",
+      },
+      { status: error instanceof RangeError ? 413 : 400 },
     );
   }
 }

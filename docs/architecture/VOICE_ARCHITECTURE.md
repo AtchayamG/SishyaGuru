@@ -38,9 +38,11 @@ evidence validation, Live/Replay truthfulness and browser-local progress model.
 ## Security and privacy controls
 
 - Server-only API key; no browser key or long-lived client audio credential.
-- Raw learner recordings, Live transcripts and generated Live speech bytes are
-  memory-only and are not stored in progress, files, databases, logs or fixtures. The
-  sole exception is a versioned, non-personal simulated Replay audio asset.
+- Raw learner recordings, unsubmitted transcript candidates and generated Live speech
+  bytes are memory-only and are not stored in files, databases, logs or fixtures. After
+  explicit review and submission, the resulting text becomes `TurnRequest.explanation`
+  and is retained in browser-local progress until the learner chooses Clear. The sole
+  audio exception is a versioned, non-personal simulated Replay asset.
 - Exact media allowlist, container verification, server-derived duration, strict
   byte/duration caps, rate limit, abort/timeout and safe errors.
 - Logs contain only random request id, MIME family, byte/duration buckets, latency,
@@ -72,7 +74,8 @@ review gate. It is deferred until user evidence justifies that complexity.
 - MIME/byte/duration/timeout rejection before provider use.
 - No microphone request before user activation and no background capture.
 - Transcript review/edit and explicit submit are mandatory.
-- Audio/transcripts absent from storage and logs.
+- Raw audio and unsubmitted transcript candidates are absent from storage and logs;
+  explicitly submitted reviewed text is browser-local progress and is cleared on request.
 - TTS input exactly equals the validated probe text.
 - AI-generated voice disclosure and text equivalence are visible.
 - Replay makes zero OpenAI audio calls and labels fixtures simulated.

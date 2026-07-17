@@ -18,7 +18,12 @@ fail-closed evidence validation, bounded memory-only transcription, and disclose
 exact-probe speech. The client prevents duplicate work, cancels stale operations, rejects
 provider mismatches, requires transcript review and provides explicit recording discard.
 Lint, typecheck, 33 unit/domain tests, production build, 9 Replay Chromium scenarios and
-7 Live Chromium scenarios pass.
+7 Live Chromium scenarios pass. M5 also adds streamed request bounds, a three-turn server
+budget, hardened response headers, accurate storage disclosures, valid responsive
+landmarks, concise assistive announcements, and automated accessibility evidence. The
+tested Replay shell has zero Axe WCAG A/AA violations; keyboard-only and 200%-equivalent
+responsive scenarios pass. The public deployment is intentionally Replay-only and will
+contain no shared OpenAI credential.
 
 A redacted real-key smoke through the application routes proved one GPT-5.6 assessment
 and the complete disclosed TTS-to-WebM-to-transcription chain. The proof logged only safe

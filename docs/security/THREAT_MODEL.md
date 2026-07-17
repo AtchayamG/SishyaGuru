@@ -30,7 +30,8 @@ The browser is untrusted. Model output is untrusted until it passes the same sch
 
 - `OPENAI_API_KEY` and provider configuration.
 - Learner explanations and session history.
-- Ephemeral microphone audio, transcripts and generated probe speech.
+- Ephemeral microphone audio, unsubmitted transcript candidates and generated probe speech.
+- Explicitly submitted reviewed explanations retained as browser-local session progress.
 - Curriculum rubric and concept identifiers.
 - Provider provenance and live/replay truthfulness.
 - Integrity of mastery evidence and state labels.
@@ -48,14 +49,14 @@ The browser is untrusted. Model output is untrusted until it passes the same sch
 | Oversized or abusive input | Trim and enforce character/turn limits before provider call | Boundary tests |
 | Malicious or oversized audio | Explicit activation; exact `audio/webm`/`audio/mp4` allowlist; container-signature verification; server-derived duration; ≤60 seconds/≤5 MB; request/rate limits; timeout; never trust client metadata | Route boundary and forged-metadata tests |
 | Accidental capture or submission | Push-to-talk only; visible timer; cancel; mandatory transcript review/edit; never auto-submit | Browser tests |
-| Audio/transcript retention | Memory-only audio; release blob after transcription/cancel; no disk/DB/localStorage/log content | Storage and log assertions |
+| Audio/transcript retention | Memory-only raw audio and unsubmitted candidate; release after transcription/cancel; submitted reviewed text becomes disclosed browser-local progress until Clear; no disk/DB/server-log content | Storage, clear-flow and log assertions |
 | Voice impersonation confusion | Built-in voice only; persistent “AI-generated voice” disclosure; identical visible text | UI assertion |
 | Speech/biometric overreach | No speaker identity, emotion, accent, fluency or health inference | Code/prompt review and negative tests |
 | Arbitrary TTS abuse | No public text-to-speech route; turn handler renders only validated probe text | Contract test |
 | Sensitive learner data retained | No server database; avoid request body logging; browser clear-session control | Code review and E2E clear flow |
 | Model provides full answer too early | Response contract requires one focused question and bounded hint; policy validator rejects answer dumps | Evaluation grader |
 | Harmful or shaming feedback | Respectful tone policy, neutral retry copy, no mental-health or ability diagnosis | Content fixtures and review |
-| Cost or denial-of-wallet | Per-session turn budget, input/output limits and visible retry behavior | Route tests and manual check |
+| Cost or denial-of-wallet | Three-turn server contract, streamed input limits and instance-local demo throttling; public judge deployment remains Replay-only until authenticated durable distributed limits exist | Route tests and deployment configuration check |
 | Provider outage or malformed result | Fail closed with recoverable error; do not manufacture mastery updates | Contract tests |
 
 ## Data-minimization policy
@@ -65,7 +66,8 @@ The browser is untrusted. Model output is untrusted until it passes the same sch
 - Keep progress in browser storage only and provide a clear reset control.
 - Send only the minimum current explanation, curated concept rubric and bounded prior context required for assessment.
 - If voice is chosen, send only the current bounded recording for transcription. Do not
-  persist it, use it for mastery, or retain it in browser progress.
+  persist raw audio or an unsubmitted candidate. After explicit review and submission,
+  retain the resulting explanation only as disclosed browser-local progress until Clear.
 - Generate speech only from the validated AI probe. Do not speak evidence quotes,
   misconceptions, personal data, or arbitrary client-supplied text.
 - Configure OpenAI requests with storage disabled when supported by the selected API contract.
@@ -85,6 +87,9 @@ The browser is untrusted. Model output is untrusted until it passes the same sch
 - Browser bundle contains no server secret.
 - Injection, XSS, evidence-forgery and oversized-input fixtures fail safely.
 - Audio type/size/duration, permission, cancellation, transcript-review and arbitrary-TTS
-  boundary tests pass; audio/transcript content is absent from storage and logs.
+  boundary tests pass; raw audio and unsubmitted candidates are absent from storage and
+  logs, while submitted reviewed text is cleared by the browser-local reset flow.
 - Replay/live provenance is visible and tested.
 - No server-side persistence of learner content exists in P0.
+- Public deployment uses Replay mode and contains no OpenAI key; Live remains an
+  owner-authorized local proof until authenticated distributed abuse controls exist.

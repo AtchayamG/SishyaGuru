@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { readBoundedJson } from "../../lib/server/bounded-json";
+import { readBoundedBytes, readBoundedJson } from "../../lib/server/bounded-json";
 
 describe("summary request boundary", () => {
   it("parses a bounded JSON body", async () => {
@@ -18,5 +18,13 @@ describe("summary request boundary", () => {
     });
 
     await expect(readBoundedJson(request, 64 * 1024)).rejects.toBeInstanceOf(RangeError);
+  });
+
+  it("bounds binary and multipart-style request streams before parsing", async () => {
+    const request = new Request("http://localhost/api/audio/transcribe", {
+      method: "POST",
+      body: Uint8Array.from([1, 2, 3, 4]),
+    });
+    await expect(readBoundedBytes(request, 3)).rejects.toBeInstanceOf(RangeError);
   });
 });

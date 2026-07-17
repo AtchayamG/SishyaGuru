@@ -65,6 +65,9 @@ export default function AppShell({ providerMode }: { providerMode: ProviderMode 
   const voiceGenerationRef = useRef(0);
   const voiceBusyRef = useRef(false);
   const replayEnabled = providerMode === "replay";
+  const assessedConceptCount = Object.values(state.masteryStates).filter(
+    (mastery) => mastery !== "unassessed",
+  ).length;
 
   useEffect(() => {
     if (chatLogRef.current) chatLogRef.current.scrollTop = chatLogRef.current.scrollHeight;
@@ -314,16 +317,14 @@ export default function AppShell({ providerMode }: { providerMode: ProviderMode 
         </p>
       </header>
 
-      <nav className="mobile-tabs" aria-label="Learning workspace views" role="tablist">
+      <nav className="mobile-tabs" aria-label="Learning workspace views">
         {TABS.map((tab) => (
           <button
             id={`tab-${tab}`}
             key={tab}
             type="button"
-            role="tab"
             aria-controls={`panel-${tab}`}
-            aria-selected={activeTab === tab}
-            tabIndex={activeTab === tab ? 0 : -1}
+            aria-pressed={activeTab === tab}
             className={activeTab === tab ? "active" : ""}
             onClick={() => activateTab(tab)}
             onKeyDown={handleTabKeyDown}
@@ -336,11 +337,13 @@ export default function AppShell({ providerMode }: { providerMode: ProviderMode 
       <main id="main" className="workspace">
         <aside
           id="panel-map"
-          role="tabpanel"
-          aria-labelledby="tab-map"
+          aria-label="Concept Map"
           className={`panel ${activeTab !== "map" ? "hide-on-compact" : ""}`}
         >
           <h2>Concept Mastery Map</h2>
+          <p role="status" aria-live="polite">
+            {assessedConceptCount} of {WATER_CYCLE_TOPIC.nodes.length} concepts assessed.
+          </p>
           <div className="node-list">
             {WATER_CYCLE_TOPIC.nodes.map((node) => {
               const mastery = state.masteryStates[node.id] ?? "unassessed";
@@ -363,8 +366,7 @@ export default function AppShell({ providerMode }: { providerMode: ProviderMode 
 
         <section
           id="panel-chat"
-          role="tabpanel"
-          aria-labelledby="tab-chat"
+          aria-label="Conversation"
           className={`panel chat-panel ${activeTab !== "chat" ? "hide-on-compact" : ""}`}
         >
           <h2>Teaching Conversation</h2>
@@ -411,7 +413,7 @@ export default function AppShell({ providerMode }: { providerMode: ProviderMode 
                 </div>
               )}
               {!replayEnabled && (
-                <div className="voice-actions" aria-live="polite">
+                <div className="voice-actions">
                   {voiceState === "recording" ? (
                     <>
                       <button type="button" className="btn-secondary" onClick={stopRecording}>
@@ -433,9 +435,14 @@ export default function AppShell({ providerMode }: { providerMode: ProviderMode 
                   )}
                   <span>
                     {voiceState === "recording" &&
-                      `Recording ${Math.floor(recordingSeconds / 60)}:${String(recordingSeconds % 60).padStart(2, "0")} / 1:00.${recordingSeconds >= 50 ? " Ten seconds or less remain." : ""}`}
+                      `Recording ${Math.floor(recordingSeconds / 60)}:${String(recordingSeconds % 60).padStart(2, "0")} / 1:00.`}
                     {voiceState === "transcribing" && "Transcribing… nothing will auto-submit."}
                     {voiceState === "idle" && "Optional push-to-talk; typing remains available."}
+                  </span>
+                  <span role="status" aria-live="polite">
+                    {voiceState === "recording" && recordingSeconds >= 50
+                      ? "Ten seconds or less remain."
+                      : ""}
                   </span>
                 </div>
               )}
@@ -520,8 +527,7 @@ export default function AppShell({ providerMode }: { providerMode: ProviderMode 
 
         <aside
           id="panel-feedback"
-          role="tabpanel"
-          aria-labelledby="tab-feedback"
+          aria-label="Feedback"
           className={`panel ${activeTab !== "feedback" ? "hide-on-compact" : ""}`}
         >
           <h2>Mastery Feedback</h2>
@@ -593,7 +599,7 @@ export default function AppShell({ providerMode }: { providerMode: ProviderMode 
         <p>
           {replayEnabled
             ? "Replay uses labelled simulated evidence and makes no OpenAI or microphone calls."
-            : "Live sends only explicitly submitted text or a bounded recording to OpenAI. The app does not persist audio or transcripts; provider processing still applies."}
+            : "Live sends only explicitly submitted text or a bounded recording to OpenAI. Raw audio and unsubmitted transcript candidates are ephemeral; submitted reviewed text stays in browser-local progress until Clear. Provider processing still applies."}
           {" "}Progress stays in this browser. Do not include personal or sensitive information.
           Clear progress removes the browser-local session.
         </p>

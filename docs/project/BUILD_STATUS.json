@@ -1,6 +1,6 @@
 {
-  "active_milestone": "M5_SUBMISSION_HARDENING",
-  "status": "m4_verified",
+  "active_milestone": "M6_PUBLICATION_AND_SUBMISSION_ASSETS",
+  "status": "m5_verified",
   "gates": {
     "rules_verified": true,
     "blueprint_complete": true,
@@ -16,11 +16,12 @@
     "m2_domain_contracts": true,
     "m3_reverse_teaching_loop": true,
     "m4_live_providers": true,
+    "m5_submission_hardening": true,
     "live_gpt_5_6_proof": true,
     "live_voice_proof": true,
     "public_repository": false,
     "demo_video": false,
     "devpost_submission": false
   },
-  "last_updated": "2026-07-18T02:15:00+05:30"
+  "last_updated": "2026-07-18T02:30:00+05:30"
 }

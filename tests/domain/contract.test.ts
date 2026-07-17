@@ -5,10 +5,26 @@ import {
   SummaryResultSchema,
   TranscriptionEnvelopeSchema,
   FORMATIVE_DISCLAIMER,
+  TurnRequestSchema,
 } from "../../lib/contract";
 import { evaluateAudioPolicy, MAX_AUDIO_BYTES, MAX_AUDIO_DURATION_MS } from "../../lib/audio-policy";
 
 describe("domain / contract", () => {
+  it("enforces the frozen three-turn P0 budget at the server contract", () => {
+    const request = {
+      topicId: "water-cycle",
+      nodeIds: ["a", "b", "c", "d", "e", "f"],
+      explanation: "A bounded explanation",
+      priorStates: Object.fromEntries(
+        ["a", "b", "c", "d", "e", "f"].map((id) => [id, "unassessed"]),
+      ),
+      turnIndex: 2,
+      outputMode: "text",
+    };
+    expect(TurnRequestSchema.safeParse(request).success).toBe(true);
+    expect(TurnRequestSchema.safeParse({ ...request, turnIndex: 3 }).success).toBe(false);
+  });
+
   it("rejects 0 length probe and 501 length probe", () => {
     const validResult = {
       assessments: [],

@@ -1,6 +1,6 @@
 # Task Status
 
-- Phase: M1-M4 complete and verified; M5 submission hardening active.
+- Phase: M1-M5 complete and verified; M6 publication and submission assets active.
 - Completed: voice-inclusive master blueprint, PRD, system and voice architecture, five
   ADRs, UX/voice UX/content/accessibility specifications, threat model, test strategy,
   evaluation plan, implementation plan, rules/evidence matrix, and submission plan.
@@ -25,8 +25,12 @@
 - Live voice proof: succeeded end-to-end using disclosed `gpt-4o-mini-tts` speech,
   server-derived WebM duration, `gpt-4o-mini-transcribe`, and candidate-only transcript
   review. Audio was temporary and is not persisted by the application.
-- Current verification: lint, strict typecheck, 33 unit/domain tests, production build,
-  9 Replay browser tests and 7 Live browser tests pass.
+- M5 verification: truthful raw-audio/submitted-text lifecycle disclosures, streamed body
+  limits, three-turn server cap, hardened response headers, valid responsive landmarks,
+  concise live regions, Replay-only public deployment policy and accessibility evidence.
+- Current verification: lint, strict typecheck, 35 unit/domain tests, production build,
+  12 Replay browser tests and 7 Live browser tests pass. Axe reports zero WCAG A/AA
+  violations on the tested Replay shell; keyboard-only and 200%-equivalent paths pass.
 - Public repository, demo video, and Devpost submission: not started.
-- Next objective: M5 accessibility/security/visual audit, deployment and public-repository
-  preparation, followed by demo and Devpost evidence.
+- Next objective: publish the public repository and Replay-only deployment, then create
+  final screenshots, narrated demo/captions and Devpost evidence.

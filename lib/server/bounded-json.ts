@@ -1,9 +1,11 @@
-export async function readBoundedJson(request: Request, maxBytes: number): Promise<unknown> {
+export async function readBoundedBytes(
+  request: Request,
+  maxBytes: number,
+): Promise<Uint8Array | undefined> {
   if (!request.body) return undefined;
   const reader = request.body.getReader();
-  const decoder = new TextDecoder();
   let size = 0;
-  let text = "";
+  const chunks: Uint8Array[] = [];
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
@@ -12,8 +14,18 @@ export async function readBoundedJson(request: Request, maxBytes: number): Promi
       await reader.cancel();
       throw new RangeError("request body too large");
     }
-    text += decoder.decode(value, { stream: true });
+    chunks.push(value);
   }
-  text += decoder.decode();
-  return JSON.parse(text);
+  const result = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) {
+    result.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return result;
+}
+
+export async function readBoundedJson(request: Request, maxBytes: number): Promise<unknown> {
+  const bytes = await readBoundedBytes(request, maxBytes);
+  return bytes ? JSON.parse(new TextDecoder().decode(bytes)) : undefined;
 }

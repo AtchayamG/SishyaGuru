@@ -3,6 +3,7 @@ import { getServerEnv } from "@/lib/env";
 import { createLiveTurn } from "@/lib/server/live-provider";
 import { getOpenAIClient } from "@/lib/server/openai-client";
 import { allowRequest, requestKey } from "@/lib/server/rate-limit";
+import { readBoundedJson } from "@/lib/server/bounded-json";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -28,7 +29,10 @@ export async function POST(request: Request) {
         { status: 413 },
       );
     }
-    const result = await createLiveTurn(await request.json(), getOpenAIClient());
+    const result = await createLiveTurn(
+      await readBoundedJson(request, 32 * 1024),
+      getOpenAIClient(),
+    );
     const status = result.ok
       ? 200
       : result.code === "INVALID_INPUT"
@@ -37,10 +41,17 @@ export async function POST(request: Request) {
           ? 429
           : 502;
     return NextResponse.json(result, { status });
-  } catch {
+  } catch (error) {
     return NextResponse.json(
-      { ok: false, code: "INVALID_INPUT", message: "The request could not be read." },
-      { status: 400 },
+      {
+        ok: false,
+        code: "INVALID_INPUT",
+        message:
+          error instanceof RangeError
+            ? "The teaching turn is too large."
+            : "The request could not be read.",
+      },
+      { status: error instanceof RangeError ? 413 : 400 },
     );
   }
 }
