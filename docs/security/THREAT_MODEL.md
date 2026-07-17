@@ -46,7 +46,7 @@ The browser is untrusted. Model output is untrusted until it passes the same sch
 | Replay presented as live | Provider provenance is mandatory and visible near results | Browser assertion |
 | Cross-site scripting | Render text as text; no raw HTML or Markdown execution from learner/model content | XSS fixture |
 | Oversized or abusive input | Trim and enforce character/turn limits before provider call | Boundary tests |
-| Malicious or oversized audio | Explicit activation; MIME allowlist; ≤60 seconds/≤5 MB; request/rate limits; timeout | Route boundary tests |
+| Malicious or oversized audio | Explicit activation; exact `audio/webm`/`audio/mp4` allowlist; container-signature verification; server-derived duration; ≤60 seconds/≤5 MB; request/rate limits; timeout; never trust client metadata | Route boundary and forged-metadata tests |
 | Accidental capture or submission | Push-to-talk only; visible timer; cancel; mandatory transcript review/edit; never auto-submit | Browser tests |
 | Audio/transcript retention | Memory-only audio; release blob after transcription/cancel; no disk/DB/localStorage/log content | Storage and log assertions |
 | Voice impersonation confusion | Built-in voice only; persistent “AI-generated voice” disclosure; identical visible text | UI assertion |

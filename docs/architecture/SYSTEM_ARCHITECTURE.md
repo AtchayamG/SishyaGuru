@@ -157,8 +157,11 @@ Summary requests follow the same lifecycle against `/api/session/summary`.
 1. The browser requests microphone permission only after the learner activates
    push-to-talk and records at most 60 seconds.
 2. The client rejects obvious empty/oversize/unsupported media, then sends the blob to
-   `/api/audio/transcribe`; the server independently revalidates MIME, bytes, timeout,
-   and Live mode before calling `gpt-4o-mini-transcribe`.
+   `/api/audio/transcribe`. The server independently normalizes the MIME type against
+   `audio/webm` and `audio/mp4`, verifies the container signature, derives duration from
+   the container with a bounded media-metadata parser, and revalidates ≤5 MB, ≤60 seconds,
+   timeout and Live mode before calling `gpt-4o-mini-transcribe`. Client duration metadata
+   is never trusted.
 3. The blob is never written to disk or logs. The returned transcript is shown in the
    same editable textarea; only explicit submit creates a normal `TurnRequest`.
 4. GPT-5.6 returns the validated text probe. If speech was requested, the turn handler

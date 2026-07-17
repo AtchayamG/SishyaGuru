@@ -23,6 +23,8 @@ Prove that the reverse-teaching loop is deterministic at its boundaries, honest 
 - `insufficient_evidence` cannot mark a concept mastered.
 - Clear-session removes browser progress.
 - Audio policy accepts only allow-listed media within byte/duration limits.
+- Audio policy verifies the container signature and server-derived duration; forged
+  client MIME or duration metadata cannot bypass the 60-second limit.
 - A transcript cannot enter `TurnRequest` without explicit learner submit.
 - Spoken output text exactly equals the validated probe question.
 
@@ -35,6 +37,10 @@ Prove that the reverse-teaching loop is deterministic at its boundaries, honest 
 - Replay selection is explicit and never triggered merely because a live call failed.
 - Replay voice fixtures are labelled simulated and invoke no OpenAI audio API.
 - Transcription and TTS failures map to stable codes without changing mastery state.
+- Invalid or ungrounded `TurnResult` output is rejected before the TTS adapter and
+  asserts zero TTS invocations.
+- Probe questions at 1 and 500 characters pass; empty and 501-character probes fail.
+- `TurnEnvelope` rejects every impossible provider/status/payload combination.
 
 ### Integration tests
 

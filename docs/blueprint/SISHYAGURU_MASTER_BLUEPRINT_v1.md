@@ -237,10 +237,10 @@ sequenceDiagram
 
 ## 6. Typed contract (request / response)
 
-Contracts are strict TypeScript, validated at the boundary with a runtime schema
-(zod) on the way in and the same schema on the way out. The **same** JSON Schema is
-handed to the OpenAI Responses API through Structured Outputs `text.format`. Live and Replay
-therefore satisfy one identical contract.
+Contracts are strict TypeScript and validated at each boundary with runtime schemas.
+The mastery request and result use the **same** JSON Schema for Live and Replay; the
+result schema is handed to the OpenAI Responses API through Structured Outputs
+`text.format`. The multipart transcription boundary has its own discriminated schema.
 
 ```ts
 // ---- Shared domain ----
@@ -255,6 +255,33 @@ interface ConceptNode {
   id: string;            // stable slug, e.g. "evaporation"
   label: string;         // human label
 }
+
+// ---- Voice transcription boundary (Live only) ----
+// multipart/form-data with exactly one `audio` File. After normalization, mediaType must
+// be exactly "audio/webm" or "audio/mp4"; the server verifies container signature,
+// derives duration from the media container, and enforces <= 5 MB and <= 60 seconds.
+interface TranscriptionSuccess {
+  ok: true;
+  providerMode: "live";             // server-authoritative provenance
+  candidateOnly: true;               // cannot mutate mastery until explicit submit
+  transcript: string;                // editable candidate, never auto-submitted
+  media: {
+    mediaType: "audio/webm" | "audio/mp4";
+    byteLength: number;
+    durationMs: number;              // independently derived server-side
+  };
+}
+
+interface TranscriptionFailure {
+  ok: false;
+  providerMode: "live";
+  code:
+    | "AUDIO_INVALID"
+    | "TRANSCRIPTION_ERROR";
+  message: string;                   // safe, stable, no raw provider details
+}
+
+type TranscriptionEnvelope = TranscriptionSuccess | TranscriptionFailure;
 
 // ---- Request ----
 interface TurnRequest {
@@ -284,21 +311,40 @@ interface TurnResult {
   assessments: MasteryAssessment[];
   misconceptions: Misconception[]; // may be empty
   probe: {
-    question: string;              // the single Curious Follow-up
+    question: string;              // one Curious Follow-up, 1..500 chars
     targetsNodeId: string;         // which node the probe is trying to expose
   };
 }
 
-interface TurnEnvelope {
+interface TurnEnvelopeBase {
   result: TurnResult;
-  providerMode: "live" | "replay";
-  probeAudio: null | {
-    mediaType: "audio/mpeg";
-    dataBase64: string;             // exact probe.question only
-    disclosure: "AI-generated voice";
-  };
-  audioStatus: "not_requested" | "ready" | "unavailable" | "simulated";
 }
+
+type TurnEnvelope = TurnEnvelopeBase & (
+  | {
+      providerMode: "live" | "replay";
+      audioStatus: "not_requested" | "unavailable";
+      probeAudio: null;
+    }
+  | {
+      providerMode: "live";
+      audioStatus: "ready";
+      probeAudio: {
+        mediaType: "audio/mpeg";
+        dataBase64: string;           // exact probe.question only
+        disclosure: "AI-generated voice";
+      };
+    }
+  | {
+      providerMode: "replay";
+      audioStatus: "simulated";
+      probeAudio: {
+        mediaType: "audio/mpeg";
+        dataBase64: string;           // versioned, non-personal fixture
+        disclosure: "AI-generated voice";
+      };
+    }
+);
 
 interface SummaryResult {
   strengths: { nodeId: string; evidenceQuote: string; note: string }[];
@@ -310,14 +356,22 @@ interface SummaryResult {
 
 ### 6.1 Validation rules (enforced server-side, both directions)
 
+0. Transcription accepts exactly one `audio` file, normalized `audio/webm` or
+   `audio/mp4`; verifies container signature; derives duration server-side; enforces
+   non-empty, ≤5 MB and ≤60 seconds; and returns a non-empty candidate transcript or a
+   typed failure. It never trusts client MIME or duration metadata.
 1. `explanation` length 1..4000; reject empty/oversize with a safe error code.
 2. Every `assessment.nodeId` and `misconception.nodeId` ∈ `TurnRequest.nodeIds`. Unknown node id → reject the whole result as `TurnError` (never invent nodes).
 3. If `assessment.state ∈ {emerging, developing, secure}` then `evidenceQuote` is a **non-empty verbatim substring** of `explanation`. A missing or unfound quote rejects the whole result; the model must explicitly choose `insufficient_evidence` when it cannot cite support.
 4. Every `misconception.evidenceQuote` must be a verbatim substring of `explanation`; any failure rejects the whole result.
-5. `probe.targetsNodeId` ∈ `nodeIds`.
+5. `probe.targetsNodeId` ∈ `nodeIds`, and `probe.question` is 1..500 characters.
 6. On any structural failure the route returns a typed error; the client stays on the prior valid map.
-7. `probeAudio`, when present, is a rendering of the already-validated `probe.question`;
-   audio never becomes evidence and cannot change the structured mastery result.
+7. The discriminated `TurnEnvelope` is validated at the server boundary. `ready` is
+   Live-only, `simulated` is Replay-only, and either requires a non-null payload;
+   `not_requested`/`unavailable` require `probeAudio: null`.
+8. TTS may run only after `TurnResult` passes every rule above. `probeAudio`, when
+   present, renders the exact validated `probe.question`; audio never becomes evidence
+   and cannot change the structured mastery result.
 
 Rule 3 and 4 make **"quote the learner's own words for every judgment"** a hard,
 mechanically-checked invariant, not a prompt suggestion.

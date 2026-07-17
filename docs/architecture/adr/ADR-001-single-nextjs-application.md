@@ -32,8 +32,8 @@ or external calendar.
    that keeps the key private. That is exactly and only what we need — no separate API
    service or auth layer.
 3. **Auth?** No accounts, no PII is solicited, and there is no per-user server data → nothing to authenticate.
-4. **Queue/worker?** One synchronous model call per user action, no fan-out, no background
-   jobs → nothing to enqueue.
+4. **Queue/worker?** Each explicit text or audio stage makes one serialized, bounded
+   provider call. There is no fan-out, polling, or background work → nothing to enqueue.
 5. **Vector DB / RAG?** The curated Topic is 6–8 constants; no retrieval needed.
 
 Adding any of these would be speculative infrastructure that expands the attack surface,
