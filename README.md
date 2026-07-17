@@ -8,9 +8,9 @@ understanding grow through a live concept mastery map.
 
 ## Status
 
-Pre-production architecture is complete and the verified M1 Next.js application
-foundation is implemented. The reverse-teaching loop and live GPT-5.6/audio proofs are
-not implemented yet; deterministic Replay remains the build-first path.
+Pre-production architecture, the M1 Next.js foundation, and M2 domain contracts are
+implemented and verified. The interactive reverse-teaching loop and live GPT-5.6/audio
+proofs are not implemented yet; deterministic Replay remains the build-first path.
 
 ## Local foundation checks
 

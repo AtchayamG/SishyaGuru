@@ -1,5 +1,5 @@
 {
-  "active_milestone": "M2_DOMAIN_CONTRACTS_AND_CURATED_TOPIC",
+  "active_milestone": "M3_REVERSE_TEACHING_LOOP",
   "status": "implementation_in_progress",
   "gates": {
     "rules_verified": true,
@@ -13,12 +13,13 @@
     "evaluation_plan_complete": true,
     "implementation_started": true,
     "m1_application_foundation": true,
-    "m2_domain_contracts": false,
+    "m2_domain_contracts": true,
+    "m3_reverse_teaching_loop": false,
     "live_gpt_5_6_proof": false,
     "live_voice_proof": false,
     "public_repository": false,
     "demo_video": false,
     "devpost_submission": false
   },
-  "last_updated": "2026-07-18T01:00:00+05:30"
+  "last_updated": "2026-07-18T01:16:00+05:30"
 }

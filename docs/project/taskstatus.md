@@ -1,6 +1,6 @@
 # Task Status
 
-- Phase: implementation in progress; M1 application foundation complete.
+- Phase: implementation in progress; M1 foundation and M2 domain contracts complete.
 - Completed: voice-inclusive master blueprint, PRD, system and voice architecture, five
   ADRs, UX/voice UX/content/accessibility specifications, threat model, test strategy,
   evaluation plan, implementation plan, rules/evidence matrix, and submission plan.
@@ -10,8 +10,11 @@
 - Working product: foundation shell only; the reverse-teaching loop is not implemented yet.
 - M1 verification: lint, strict typecheck, 6 unit tests, production build, and 3
   Chromium smoke tests pass in the relocated workspace.
+- M2 verification: the canonical eight-node Water Cycle topic, strict Zod contracts,
+  evidence/summary validators, atomic mastery reducer, bounded audio policy and
+  deterministic simulated Replay fixtures pass 16 focused domain tests (22 total).
 - Live GPT-5.6 proof: not started.
 - Live voice proof: not started.
 - Public repository, demo video, and Devpost submission: not started.
-- Next objective: M2 strict domain contracts, curated Water Cycle rubric, evidence
-  validation, mastery reducer, and deterministic Replay fixtures.
+- Next objective: M3 interactive deterministic Replay teaching loop, responsive concept
+  map/evidence UI, browser-local progress, and voice transcript/playback states.
