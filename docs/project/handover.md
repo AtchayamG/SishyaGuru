@@ -3,7 +3,7 @@
 - Product: SishyaGuru, a reverse-teaching mastery coach.
 - Tagline: You teach. AI learns. You master.
 - Workspace: `D:\Work\Codex\Hackathon Projects\OpenAI Hackathon\SishyaGuru`.
-- Phase: M1 foundation and M2 domain contracts verified; M3 teaching loop is active.
+- Phase: M1-M3 verified; M4 request-based Live providers are active.
 - Primary category: Education.
 - Core constraint: the project must be unique and substantially different from Incident Commander AI.
 - Frozen P0: the Water Cycle with eight trusted concepts, evidence-bound mastery
@@ -23,6 +23,9 @@
 - M2 evidence: one Zod contract source, exact canonical topic validation, atomic mastery
   updates, grounded turn/summary checks, strict audio/transcription envelopes and three
   deterministic Replay turns; 22 total unit/contract tests pass.
-- Next: implement the M3 Replay-first reverse-teaching UI, concept map, evidence panel,
-  browser-local progress and bounded transcript/playback states without adding a
-  database, auth, queues, RAG, multiple topics, or a Realtime session.
+- M3 evidence: deterministic three-turn Replay UI, all eight mastery nodes, cited
+  evidence/rationale, respectful misconception feedback, validated summary, versioned
+  browser-local progress, confirmed clearing, and transcript review through the same gate;
+  22 unit/contract tests and 9 Chromium scenarios pass.
+- Next: implement M4 server-only request-based GPT-5.6, transcription and exact-probe TTS
+  adapters without adding a database, auth, queues, RAG, multiple topics, or Realtime.
