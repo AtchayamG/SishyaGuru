@@ -1,8 +1,10 @@
 import {
   JUDGED_STATES,
+  SummaryResultSchema,
   TurnRequestSchema,
   TurnResultSchema,
   type MasteryState,
+  type SummaryResult,
   type TurnRequest,
   type TurnResult,
 } from "./contract";
@@ -33,9 +35,17 @@ export function validateTurnRequest(candidate: unknown): RequestValidation {
   if (badNode !== undefined) {
     return { ok: false, code: "INVALID_INPUT", reason: `unknown nodeId "${badNode}"` };
   }
-  const badPrior = Object.keys(request.priorStates).find((id) => !curated.has(id));
+  if (request.nodeIds.length !== curated.size) {
+    return { ok: false, code: "INVALID_INPUT", reason: "nodeIds must exactly match the canonical topic nodes" };
+  }
+
+  const priorKeys = Object.keys(request.priorStates);
+  const badPrior = priorKeys.find((id) => !curated.has(id));
   if (badPrior !== undefined) {
     return { ok: false, code: "INVALID_INPUT", reason: `unknown priorStates nodeId "${badPrior}"` };
+  }
+  if (priorKeys.length !== curated.size) {
+    return { ok: false, code: "INVALID_INPUT", reason: "priorStates must exactly match the canonical topic nodes" };
   }
   return { ok: true, request };
 }
@@ -96,6 +106,9 @@ export function validateTurnResult(
     if (!request.explanation.includes(misconception.evidenceQuote)) {
       return reject("misconception evidenceQuote is not a verbatim substring of the explanation");
     }
+    if (!misconception.gentleNote.toLowerCase().includes("worth double-checking")) {
+      return reject('misconception gentleNote must use "worth double-checking" framing');
+    }
   }
 
   if (!known.has(result.probe.targetsNodeId)) {
@@ -103,6 +116,59 @@ export function validateTurnResult(
   }
 
   return { ok: true, result };
+}
+
+export type SummaryValidation =
+  | { ok: true; result: SummaryResult }
+  | { ok: false; code: "SCHEMA_INVALID"; reason: string };
+
+/** Validates summary claims against canonical nodes and accumulated learner text. */
+export function validateSummaryResult(
+  candidate: unknown,
+  evidenceCorpus: readonly string[],
+): SummaryValidation {
+  const parsed = SummaryResultSchema.safeParse(candidate);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      code: "SCHEMA_INVALID",
+      reason: parsed.error.issues[0]?.message ?? "malformed summary",
+    };
+  }
+
+  const known = new Set(WATER_CYCLE_NODE_IDS);
+  const seenStrengths = new Set<string>();
+  for (const strength of parsed.data.strengths) {
+    if (!known.has(strength.nodeId) || seenStrengths.has(strength.nodeId)) {
+      return {
+        ok: false,
+        code: "SCHEMA_INVALID",
+        reason: `unknown or duplicate strength nodeId "${strength.nodeId}"`,
+      };
+    }
+    if (!evidenceCorpus.some((explanation) => explanation.includes(strength.evidenceQuote))) {
+      return {
+        ok: false,
+        code: "SCHEMA_INVALID",
+        reason: "strength evidenceQuote is not a verbatim substring of session evidence",
+      };
+    }
+    seenStrengths.add(strength.nodeId);
+  }
+
+  const seenGaps = new Set<string>();
+  for (const gap of parsed.data.gaps) {
+    if (!known.has(gap.nodeId) || seenGaps.has(gap.nodeId)) {
+      return {
+        ok: false,
+        code: "SCHEMA_INVALID",
+        reason: `unknown or duplicate gap nodeId "${gap.nodeId}"`,
+      };
+    }
+    seenGaps.add(gap.nodeId);
+  }
+
+  return { ok: true, result: parsed.data };
 }
 
 export type TurnApplication =

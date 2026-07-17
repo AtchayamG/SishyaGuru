@@ -1,8 +1,6 @@
 import { z } from "zod";
 import {
-  AudioMediaTypeSchema,
-  MAX_AUDIO_BYTES,
-  MAX_AUDIO_DURATION_MS,
+  ServerAudioMetadataSchema,
 } from "./audio-policy";
 
 /**
@@ -58,11 +56,7 @@ export const TranscriptionSuccessSchema = z.strictObject({
   providerMode: z.literal("live"), // server-authoritative provenance
   candidateOnly: z.literal(true), // cannot mutate mastery until explicit submit
   transcript: z.string().min(1), // editable candidate, never auto-submitted
-  media: z.strictObject({
-    mediaType: AudioMediaTypeSchema,
-    byteLength: z.number().int().positive().max(MAX_AUDIO_BYTES),
-    durationMs: z.number().int().positive().max(MAX_AUDIO_DURATION_MS), // server-derived
-  }),
+  media: ServerAudioMetadataSchema,
 });
 export type TranscriptionSuccess = z.infer<typeof TranscriptionSuccessSchema>;
 
