@@ -6,12 +6,11 @@ test("foundation shell renders the three-region workspace honestly", async ({
   await page.goto("/");
 
   await expect(page.getByRole("heading", { level: 1, name: "SishyaGuru" })).toBeVisible();
-  await expect(page.getByText("Pre-production foundation", { exact: true })).toBeVisible();
   await expect(page.getByText("Provider: Simulated (Replay mode)")).toBeVisible();
 
-  await expect(page.getByRole("complementary", { name: "Concept mastery map" })).toBeVisible();
-  await expect(page.getByRole("region", { name: "Teaching conversation" })).toBeVisible();
-  await expect(page.getByRole("complementary", { name: "Mastery feedback" })).toBeVisible();
+  await expect(page.getByRole("tabpanel", { name: "Concept Map" })).toBeVisible();
+  await expect(page.getByRole("tabpanel", { name: "Conversation" })).toBeVisible();
+  await expect(page.getByRole("tabpanel", { name: "Feedback" })).toBeVisible();
 });
 
 test("voice capability is detected without requesting microphone permission", async ({
@@ -33,7 +32,7 @@ test("voice capability is detected without requesting microphone permission", as
 
   await page.goto("/");
   await expect(page.getByTestId("voice-support")).toContainText(
-    /supports push-to-talk recording|not supported in this browser/,
+    /supports push-to-talk recording|unavailable in this browser/,
   );
   expect(permissionRequested).toBe(false);
 });

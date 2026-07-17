@@ -1,7 +1,7 @@
 import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
-  testDir: "tests/foundation",
+  testDir: "tests",
   testMatch: "**/*.spec.ts",
   use: { baseURL: "http://localhost:3199" },
   webServer: {
