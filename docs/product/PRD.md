@@ -18,7 +18,8 @@
 Learners think they understand a topic until they try to explain it. Passive tutoring
 tells you answers; it rarely reveals *where your own understanding is thin*. There is no
 low-stakes, honest mirror that shows a learner the exact concepts where their explanation
-is secure versus shaky — in their own words, without pretending to grade them.
+is secure, developing, emerging, or not yet supported by enough evidence — in their
+own words, without pretending to grade them.
 
 ## 2. Solution
 
@@ -48,7 +49,7 @@ requirement, not a preference.
 
 | # | Requirement |
 | --- | --- |
-| P0-1 | One curated Topic with **6–8** Concept Nodes rendered as a live Concept Mastery Map. |
+| P0-1 | The curated **Water Cycle** Topic with **6–8** Concept Nodes rendered as a live Concept Mastery Map. |
 | P0-2 | Learner submits an Explanation and receives, via strict Structured Outputs, per-node Mastery Assessments, zero-or-more Misconceptions, and **one** Curious Follow-up probe. |
 | P0-3 | Every mastery/misconception judgment quotes the learner's **verbatim** words; enforced server-side. |
 | P0-4 | Uncertainty (`insufficient_evidence`) is reachable and shown honestly. |

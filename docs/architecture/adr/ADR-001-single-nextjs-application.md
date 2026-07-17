@@ -29,7 +29,7 @@ or external calendar.
 2. **Native platform feature?** A Next.js Route Handler already gives a server boundary
    that keeps the key private. That is exactly and only what we need — no separate API
    service or auth layer.
-3. **Auth?** No accounts, no PII, no per-user server data → nothing to authenticate.
+3. **Auth?** No accounts, no PII is solicited, and there is no per-user server data → nothing to authenticate.
 4. **Queue/worker?** One synchronous model call per user action, no fan-out, no background
    jobs → nothing to enqueue.
 5. **Vector DB / RAG?** The curated Topic is 6–8 constants; no retrieval needed.

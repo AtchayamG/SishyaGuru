@@ -15,12 +15,12 @@ invariants; parsing prose for them is fragile and unsafe.
 ## Decision
 
 Define the request/response as **strict TypeScript with one runtime schema (zod)** in a
-single module. Hand the *same* schema to OpenAI as `response_format` Structured Outputs
-with `strict: true`. Enforce, server-side and in both directions, the evidence rules
-(blueprint §6.1): valid mastery states require a **verbatim substring** of the
-explanation as `evidenceQuote`; a missing/unfound quote downgrades that node to
-`insufficient_evidence`; misconceptions without a verbatim quote are dropped; unknown
-node ids reject the result.
+single module. Hand the *same* schema to the OpenAI Responses API as Structured Outputs
+through `text.format` with `strict: true` and `store: false`. Enforce, server-side and in
+both directions, the evidence rules (blueprint §6.1): valid mastery states require a
+**verbatim substring** of the explanation as `evidenceQuote`; missing/unfound quotes,
+uncited misconceptions, and unknown node ids reject the complete result. The model must
+emit `insufficient_evidence` explicitly when evidence is inadequate.
 
 ## Rationale (the ladder)
 
@@ -41,8 +41,8 @@ node ids reject the result.
 - **Positive:** Every judgment shown to a learner is cited and typed. Overclaiming is
   structurally hard. Contract tests can prove the invariants. Formative-not-a-grade is
   encoded, not just promised.
-- **Negative / accepted limits:** The substring rule can drop a *correct* judgment when
-  the model paraphrases instead of quoting; we accept honest under-claiming over
+- **Negative / accepted limits:** The substring rule can reject an otherwise *correct*
+  result when the model paraphrases instead of quoting; we accept honest under-claiming over
   unverifiable over-claiming. Strict schemas mean prompt/schema changes are coupled — an
   intentional cost for a single source of truth.
 - **Revisit when:** we need richer evidence than verbatim substrings (e.g. spans across

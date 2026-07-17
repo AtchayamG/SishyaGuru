@@ -45,7 +45,7 @@ Prove that the reverse-teaching loop is deterministic at its boundaries, honest 
 2. Submit the golden explanation.
 3. Verify one curious follow-up question appears.
 4. Verify the expected concepts change state.
-5. Verify evidence and confidence are visible.
+5. Verify evidence and the canonical mastery state are visible.
 6. Submit a misconception and verify respectful retry guidance.
 7. Complete the session and verify the summary.
 8. Reload and confirm browser-local continuity.
@@ -98,4 +98,3 @@ pnpm demo:assert
 ```
 
 No command is claimed available until it exists and passes.
-

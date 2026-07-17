@@ -63,7 +63,7 @@ lib/
     index.ts                   # selectProvider() from server env
     live.ts                    # OpenAI Structured Outputs adapter
     replay.ts                  # fixture adapter
-  topic/curated-topic.ts       # the one Topic + 6-8 nodes (trusted constants)
+  topic/water-cycle.ts         # Water Cycle + 6-8 nodes (trusted constants)
 fixtures/                      # replay fixtures + adversarial cases
 ```
 
@@ -213,9 +213,9 @@ UI labels Replay as *Simulated* truthfully (blueprint §8).
 | Layer | Test | Asserts |
 | --- | --- | --- |
 | Contract | Fixtures validate vs schema | Live/Replay share one contract |
-| Contract | Missing evidence quote → downgrade | Blueprint §6.1 rule 3 |
+| Contract | Missing evidence quote → reject complete result | Blueprint §6.1 rule 3 |
 | Contract | Unknown nodeId → reject | Rule 2 |
-| Contract | Non-substring quote → dropped | Rules 3–4 |
+| Contract | Non-substring quote → reject complete result | Rules 3–4 |
 | Contract | Oversize/empty explanation → INVALID_INPUT | §14 |
 | State | Illegal transition rejected | Blueprint §4 invariants |
 | State | Single in-flight call | §4 |

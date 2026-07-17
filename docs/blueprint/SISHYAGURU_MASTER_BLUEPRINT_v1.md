@@ -24,7 +24,7 @@ words until the gaps show — is the oldest mastery test there is. SishyaGuru in
 usual tutor: instead of the AI lecturing the student, the **student teaches the AI**,
 the AI plays a *curious, slightly-behind learner* that asks the naive follow-up
 questions a real novice would ask, and the system watches where the student's
-explanation is **secure**, **shaky**, or **missing** — surfacing that as a live concept
+explanation is **secure**, **developing**, **emerging**, or lacks enough evidence — surfacing that as a live concept
 mastery map.
 
 The output is **formative guidance**, never a grade. SishyaGuru tells a learner *"here
@@ -36,7 +36,7 @@ it never certifies competence, issues a score of record, or diagnoses ability.
 SishyaGuru shares **no product logic, domain model, prompt design, or data flow** with
 Incident Commander AI. Incident Commander AI is an operations/incident-response
 assistant that ingests alerts and coordinates responders under time pressure.
-SishyaGuru is an education product whose core object is a *learner's spoken explanation
+SishyaGuru is an education product whose core object is a *learner's written explanation
 of a concept* and whose core output is a *cited, uncertainty-aware mastery map*. There
 is no incident, no alerting, no on-call, no responder coordination, and no runbook
 anywhere in this product. Any reuse of Incident Commander product logic is a hard STOP
@@ -52,7 +52,7 @@ These terms are used with exactly this meaning across all code and documents.
 | --- | --- |
 | **Learner** (a.k.a. the Sishya-as-teacher / user) | The human being. In a session they play the *teacher*. Overall they are the *student* whose mastery grows. The name SishyaGuru captures this: the student (*sishya*) becomes the teacher (*guru*). |
 | **AI Learner** (a.k.a. the curious pupil) | The model persona. It plays a bright but slightly-behind novice who is genuinely curious and asks naive, probing follow-up questions. It never lectures, never grades, never claims authority. |
-| **Topic** | One curated subject the learner teaches. P0 ships exactly **one** curated Topic. |
+| **Topic** | One curated subject the learner teaches. P0 ships exactly one Topic: **The Water Cycle**. |
 | **Concept Node** | One idea within a Topic. P0 Topic has **6–8** Concept Nodes. |
 | **Concept Mastery Map** | The graph of Concept Nodes and their `masteryState`, rendered live. It is the product's signature surface. |
 | **Explanation** | One turn of the learner teaching — free text the learner submits explaining part of the Topic. |
@@ -63,7 +63,7 @@ These terms are used with exactly this meaning across all code and documents.
 | **Mastery State** | Enum: `unassessed`, `insufficient_evidence`, `emerging`, `developing`, `secure`. Formative only. |
 | **Turn** | One cycle: Explanation → Assessment → Probe. |
 | **Session** | An ordered set of Turns over one Topic, ending in a Session Summary. |
-| **Session Summary** | The formative wrap-up: strengths, gaps to revisit, and suggested next explanation, all quoting the learner's own words. |
+| **Session Summary** | The formative wrap-up: evidence-backed strengths, gaps to revisit, and a suggested next explanation. Every claimed strength quotes the learner's own words; absence-of-evidence gaps do not fabricate quotes. |
 | **Provider** | The source of model responses. Exactly two, explicitly labelled: **Live** (OpenAI Structured Outputs) and **Replay** (deterministic fixture). See ADR-003. |
 | **Progress** | The learner's saved mastery across sessions, stored **browser-local only** (see ADR-004). |
 
@@ -80,6 +80,23 @@ These terms are used with exactly this meaning across all code and documents.
 `insufficient_evidence` is a first-class, always-available answer. The system must be
 willing to say "we don't have enough to judge this yet." Overclaiming mastery is a
 worse failure than admitting uncertainty.
+
+### 2.2 Curated P0 topic
+
+P0 teaches exactly **The Water Cycle** through eight trusted Concept Nodes:
+
+1. solar energy;
+2. evaporation;
+3. transpiration;
+4. condensation;
+5. precipitation;
+6. collection and surface runoff;
+7. infiltration and groundwater; and
+8. cyclic movement of water.
+
+The trusted topic definition also stores directed relationships between these nodes and
+short educator-authored criteria for each state. The model may assess only these node
+ids; it cannot create, rename, or delete concepts.
 
 ---
 
@@ -105,7 +122,7 @@ tests). It is always clearly labelled as simulated.
 4. The system returns, in one structured response: an updated Mastery Assessment for the touched nodes (each with a quoted evidence snippet), any Misconceptions (each quoted), and one Curious Follow-up probe.
 5. The Concept Mastery Map animates to the new states. The learner sees where they're `secure` vs `emerging` vs `insufficient_evidence`.
 6. Learner answers the probe with another Explanation. Repeat 4–5 for a few Turns.
-7. Learner ends the session and receives a Session Summary quoting their own words: strengths, gaps to revisit, suggested next explanation.
+7. Learner ends the session and receives a Session Summary with quoted evidence for strengths, gaps to revisit, and a suggested next explanation.
 8. Progress persists browser-local; on return the map shows prior mastery, clearly dated.
 
 ### 3.4 Journey diagram
@@ -157,9 +174,10 @@ State invariants:
 
 ---
 
-## 5. The API boundary (single server route)
+## 5. The API boundary (two server route handlers)
 
-One Next.js Route Handler is the entire backend. The OpenAI key lives only there.
+Two narrow Next.js Route Handlers are the entire backend. The OpenAI key lives only in
+their shared server-only provider module.
 
 ```mermaid
 sequenceDiagram
@@ -185,7 +203,7 @@ sequenceDiagram
 
 Contracts are strict TypeScript, validated at the boundary with a runtime schema
 (zod) on the way in and the same schema on the way out. The **same** JSON Schema is
-handed to OpenAI as the Structured Outputs `response_format`. Live and Replay
+handed to the OpenAI Responses API through Structured Outputs `text.format`. Live and Replay
 therefore satisfy one identical contract.
 
 ```ts
@@ -198,7 +216,7 @@ type MasteryState =
   | "secure";
 
 interface ConceptNode {
-  id: string;            // stable slug, e.g. "big-o-notation"
+  id: string;            // stable slug, e.g. "evaporation"
   label: string;         // human label
 }
 
@@ -246,8 +264,8 @@ interface SummaryResult {
 
 1. `explanation` length 1..4000; reject empty/oversize with a safe error code.
 2. Every `assessment.nodeId` and `misconception.nodeId` ∈ `TurnRequest.nodeIds`. Unknown node id → reject the whole result as `TurnError` (never invent nodes).
-3. If `assessment.state ∈ {emerging, developing, secure}` then `evidenceQuote` is a **non-empty verbatim substring** of `explanation`. If the quote is missing or not found in the text, downgrade that node to `insufficient_evidence` (never fabricate evidence).
-4. Every `misconception.evidenceQuote` must be a verbatim substring of `explanation`; misconceptions failing this are dropped.
+3. If `assessment.state ∈ {emerging, developing, secure}` then `evidenceQuote` is a **non-empty verbatim substring** of `explanation`. A missing or unfound quote rejects the whole result; the model must explicitly choose `insufficient_evidence` when it cannot cite support.
+4. Every `misconception.evidenceQuote` must be a verbatim substring of `explanation`; any failure rejects the whole result.
 5. `probe.targetsNodeId` ∈ `nodeIds`.
 6. On any structural failure the route returns a typed error; the client stays on the prior valid map.
 
@@ -285,8 +303,10 @@ interface Provider {
 }
 ```
 
-- **Live** provider calls OpenAI with the configured model (`OPENAI_MODEL`, default
-  `gpt-5.6`) using Structured Outputs.
+- **Live** provider calls the OpenAI Responses API with the configured model
+  (`OPENAI_MODEL`, default `gpt-5.6`), `store: false`, and the schema above through
+  `text.format` (prefer the JavaScript SDK Zod helper so runtime and API schemas share
+  one source).
 - **Replay** provider returns pre-recorded fixtures keyed by `(topicId, turnIndex)`,
   passing through the identical validation.
 
@@ -323,6 +343,9 @@ interface Provider {
 - The server route is stateless: it holds request data only for the duration of the
   call and does not persist explanations. Explanations are **not** logged verbatim
   (see §12 observability).
+- In Live mode, the current explanation and minimum trusted topic/session context are
+  sent to OpenAI for assessment with `store: false`. The UI discloses this before use
+  and tells learners not to enter personal or sensitive information.
 - The OpenAI key is server-only and never reaches the browser, logs, fixtures, or Git.
 
 ---
@@ -332,10 +355,10 @@ interface Provider {
 - Keyboard-operable throughout: explanation textarea, submit, end-session, clear-progress.
 - The Concept Mastery Map is **not colour-only**: each node shows a text label + an
   icon/shape per state, plus colour. State is announced to screen readers via
-  `aria-label` (e.g. "Big-O notation: developing").
+  `aria-label` (e.g. "Evaporation: developing").
 - Live updates announced through an `aria-live="polite"` region so a screen-reader user
   hears assessment/probe changes.
-- Meets WCAG 2.1 AA contrast for text and state indicators.
+- Meets WCAG 2.2 AA contrast for text and state indicators.
 - Respects `prefers-reduced-motion` for map animations.
 
 ---
@@ -387,7 +410,7 @@ No error ever leaks the key, stack traces, model internals, or raw provider payl
 ### 15.1 Evaluation fixtures
 
 - One curated Topic with 6–8 Nodes, authored as trusted constants.
-- A fixture set covering a full Replay session: a strong turn (`secure`), a shaky turn
+- A fixture set covering a full Replay session: a strong turn (`secure`), a developing turn
   (`developing` + one Misconception), an under-specified turn (`insufficient_evidence`),
   and a Summary. Every fixture passes §6.1 validation.
 - Adversarial fixtures: an explanation containing an injection attempt, an explanation
@@ -397,7 +420,7 @@ No error ever leaks the key, stack traces, model internals, or raw provider payl
 ### 15.2 Tests (see architecture doc §Tests for the full matrix)
 
 - **Contract tests:** every fixture validates against the schema; §6.1 rules enforced
-  (missing quote → downgrade; unknown node → reject; non-substring quote → drop).
+  (missing quote, unknown node, or non-substring quote → reject the complete result).
 - **State machine tests:** illegal transitions rejected; only one in-flight call.
 - **Provider parity test:** Live and Replay outputs satisfy the identical schema.
 - **Truthfulness test:** Replay responses carry the simulated label; `providerMode` matches server env.
@@ -424,7 +447,7 @@ A P0 build is acceptable only when **all** hold:
 2. A learner can teach an Explanation and receive, via strict Structured Outputs, an updated per-node Mastery Assessment, zero-or-more Misconceptions, and one Curious Follow-up probe.
 3. Every non-`unassessed`/`insufficient_evidence` assessment and every Misconception quotes the learner's own verbatim words; the substring check is enforced server-side.
 4. `insufficient_evidence` / uncertainty is reachable and shown honestly.
-5. A Session Summary quotes the learner's words and carries the formative-not-a-grade disclaimer.
+5. A Session Summary quotes learner evidence for every claimed strength and carries the formative-not-a-grade disclaimer.
 6. Progress persists browser-local and is user-clearable with confirmation.
 7. Replay mode runs the entire loop with **no credential** and is clearly labelled *Simulated* on every turn; it is never presented as a live result.
 8. The OpenAI key never appears in the client bundle, responses, logs, fixtures, or Git.
@@ -455,3 +478,12 @@ working:
 
 Adding any of these to satisfy P0 is a STOP condition. P0 is the smallest architecture
 that safely satisfies the golden loop.
+
+---
+
+## 19. Authoritative OpenAI implementation references
+
+- [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs):
+  use the Responses API `text.format` shape and the JavaScript SDK Zod helper.
+- [Responses migration differences](https://developers.openai.com/api/docs/guides/migrate-to-responses#additional-differences):
+  Responses are stored by default, so P0 explicitly sets `store: false`.

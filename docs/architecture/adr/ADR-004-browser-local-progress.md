@@ -7,7 +7,7 @@
 ## Context
 
 A learner should see their prior mastery when they return, so the Concept Mastery Map is
-not blank each visit. But P0 has no accounts, no PII, no cross-user data, and no
+not blank each visit. But P0 has no accounts, solicits no PII, has no cross-user data, and no
 requirement for cross-device continuity. Progress is small: a `Record<nodeId,
 MasteryState>` plus a timestamp and topicId.
 

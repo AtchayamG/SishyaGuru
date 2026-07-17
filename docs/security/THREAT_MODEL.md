@@ -26,7 +26,7 @@ The browser is untrusted. Model output is untrusted until it passes the same sch
 - Learner explanations and session history.
 - Curriculum rubric and concept identifiers.
 - Provider provenance and live/replay truthfulness.
-- Integrity of mastery evidence and confidence labels.
+- Integrity of mastery evidence and state labels.
 
 ## Threats and controls
 
@@ -35,7 +35,7 @@ The browser is untrusted. Model output is untrusted until it passes the same sch
 | API key reaches browser bundle | Read key only in server-only module; never expose `NEXT_PUBLIC_*` secret | Build scan and bundle search |
 | Prompt injection in learner text | Delimit learner content; system policy and rubric are not user-controlled; validate output | Injection evaluation fixture |
 | Model invents evidence | Evidence quote must be an exact substring of the learner explanation | Deterministic validator test |
-| Unsupported mastery certainty | Confidence is bounded; `insufficient_evidence` is allowed; UI labels estimates | Contract and UI tests |
+| Unsupported mastery certainty | State is bounded; `insufficient_evidence` is allowed; UI labels judgments as formative estimates | Contract and UI tests |
 | Replay presented as live | Provider provenance is mandatory and visible near results | Browser assertion |
 | Cross-site scripting | Render text as text; no raw HTML or Markdown execution from learner/model content | XSS fixture |
 | Oversized or abusive input | Trim and enforce character/turn limits before provider call | Boundary tests |
@@ -69,4 +69,3 @@ The browser is untrusted. Model output is untrusted until it passes the same sch
 - Injection, XSS, evidence-forgery and oversized-input fixtures fail safely.
 - Replay/live provenance is visible and tested.
 - No server-side persistence of learner content exists in P0.
-

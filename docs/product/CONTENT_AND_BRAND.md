@@ -14,7 +14,7 @@ The core of SishyaGuru is the AI persona. It must strictly adhere to the followi
 - **Never Supplies the Full Answer:** The AI will not do the work for the student. It guides the student to correct themselves through Socratic questioning.
 
 ## 3. Typography
-- **Primary Font:** Inter or Roboto (sans-serif). Clean, highly legible, professional.
+- **Primary Font:** Use the application platform's system sans-serif stack for P0. Add a hosted font only if later visual testing proves it necessary.
 - **Hierarchy:** Strict adherence to h1, h2, h3 scaling for clear information architecture.
 
 ## 4. Color and Contrast (Professional Palette)
@@ -24,12 +24,12 @@ The core of SishyaGuru is the AI persona. It must strictly adhere to the followi
 - **Strictly Avoid:** Saturated neons, sweeping gradients, or overly playful UI flourishes.
 
 ## 5. Required Copy Elements
-- **Consent/Privacy Copy:** 
-  > "Your learning sessions are processed locally where possible and securely sent to our AI models for evaluation. We do not use your teaching sessions to train public models. [Review Privacy Terms]"
+- **Privacy copy:**
+  > "Your progress stays in this browser. In Live mode, your current explanation and the minimum learning context are sent to OpenAI for assessment. Do not include personal or sensitive information. Clear session removes local progress."
 - **Provenance Labels (Truthful Disclosure):** 
   Every session must clearly indicate its execution context in the header:
-  - `[ Live GPT-5.6 Session ]`
-  - `[ Simulated Replay ]` (For deterministic test data/demos).
+  - `[ Live GPT-5.6 ]`
+  - `[ Simulated Replay ]` (for deterministic test data and credential-free judging).
 
 ## 6. Content Tone
 - **UI Copy:** Concise, objective, directive. (e.g., "Begin Teaching", "Concept Map", "Mastery Evidence").

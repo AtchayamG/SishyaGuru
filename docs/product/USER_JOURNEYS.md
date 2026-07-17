@@ -3,7 +3,7 @@
 ## 1. The Reverse-Teaching Loop
 **Objective:** The user actively teaches the AI a curated concept to solidify their own understanding.
 
-*   **Step 1:** User logs in/arrives at the P0 topic page. The AI persona introduces the topic and asks a single, foundational question to start the session.
+*   **Step 1:** The learner arrives at the credential-free P0 topic page. The AI persona introduces the topic and asks a single, foundational question to start the session.
 *   **Step 2:** User inputs an explanation (teaching the AI).
 *   **Step 3:** AI processes the input and responds with an honest, curious follow-up question. It asks exactly *one* focused question at a time.
 *   **Step 4:** The loop repeats, driving deeper into the concept tree.
@@ -15,7 +15,7 @@
 *   **Step 2:** The system evaluates the user's input against the Concept Map.
 *   **Step 3:** The Mastery Feedback Panel updates. It displays:
     *   **Evidence:** Specific quotes or concepts the user successfully explained.
-    *   **Confidence:** A visual indicator of the AI's confidence in the user's mastery of the sub-topic.
+    *   **Mastery state:** One canonical labelled state: `Not assessed`, `Not enough evidence`, `Emerging`, `Developing`, or `Secure`; never a grade or intelligence score. A misconception may add a separate `Try again` action but is not a mastery state.
 *   **Step 4:** The Concept Map Panel updates, highlighting nodes that have been successfully "taught."
 
 ## 3. Misconception Correction and Retry Path

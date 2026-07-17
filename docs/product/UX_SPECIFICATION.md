@@ -25,15 +25,15 @@ A single page encompassing the three core pillars of the experience:
 - **Layout:** ThreePanelContainer, ResponsiveTabGroup.
 - **Concept Map:** GraphNode, EdgeConnector, TopicLegend.
 - **Conversation:** ChatLog, UserMessageBubble, AIMessageBubble, ChatInputForm, TypingIndicator.
-- **Mastery Feedback:** ConfidenceMeter (0-100%), EvidenceCard, MisconceptionAlert, RetryPrompt.
-- **Global:** HeaderBar, ProvenanceBadge ("Live GPT-5.6" or "Simulated Replay"), PrivacyConsentBanner.
+- **Mastery Feedback:** SupportLevelBadge, EvidenceCard, MisconceptionAlert, RetryPrompt.
+- **Global:** HeaderBar, ProvenanceBadge ("Live GPT-5.6" or "Simulated Replay"), PrivacyNotice, ClearSessionButton.
 
 ## 6. Interaction States
 - **Default:** Topic loaded, AI awaits the student's initial teaching statement.
 - **Hover/Focus:** Interactive elements (buttons, nodes) highlight with accessible contrast shifts.
 - **Loading:** Skeleton loaders in the Mastery Feedback panel during AI evaluation; smooth typing indicator in the Conversation panel.
 - **Disabled:** Send button disabled when input is empty or AI is generating a response.
-- **Error:** Non-intrusive inline error banners (e.g., "Network error. Retrying connection...").
+- **Error:** Non-intrusive inline errors that explain whether the learner can retry. The application never silently changes from live mode to replay mode.
 - **Empty States:** Concept map shows unlit nodes; Mastery Feedback displays "Awaiting your first lesson to assess mastery."
 
 ## 7. Acceptance Criteria (Responsive & Layout)

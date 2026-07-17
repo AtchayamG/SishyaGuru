@@ -5,7 +5,7 @@ Source of truth: `docs/blueprint/SISHYAGURU_MASTER_BLUEPRINT_v1.md`.
 - Build the P0 golden learning loop before optional features.
 - Keep the repository root clean. Root Markdown is limited to `AGENTS.md` and `README.md`.
 - Store durable documentation under `docs/` using the existing purpose-based folders.
-- Use strict TypeScript contracts and OpenAI Structured Outputs at the model boundary.
+- Use strict TypeScript contracts and OpenAI Responses API Structured Outputs through `text.format` at the model boundary; set `store: false`.
 - Never expose API keys to the browser, logs, fixtures, screenshots, or Git.
 - Label deterministic replay data as simulated; never present it as a live GPT-5.6 result.
 - Treat mastery estimates as learning guidance, not certified grades or diagnoses.
@@ -28,4 +28,3 @@ Source of truth: `docs/blueprint/SISHYAGURU_MASTER_BLUEPRINT_v1.md`.
 - Name: SishyaGuru
 - Tagline: You teach. AI learns. You master.
 - Description: SishyaGuru is a reverse-teaching mastery coach where students teach an AI learner, answer its curious questions and watch their understanding grow through a live concept mastery map.
-

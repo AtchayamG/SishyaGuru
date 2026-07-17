@@ -29,7 +29,7 @@ server-authoritative and returned to the client as `providerMode`. The UI render
 1. Replay is clearly labelled *Simulated* on every turn.
 2. Replay output is never logged, screenshotted, or submitted as a live GPT-5.6 result.
 3. Mode is chosen from server env only — a client cannot force Live or spend credits.
-4. Fixtures are pedagogically honest (they include shaky and insufficient-evidence turns),
+4. Fixtures are pedagogically honest (they include developing and insufficient-evidence turns),
    not cherry-picked to flatter.
 
 ## Rationale (the ladder)
