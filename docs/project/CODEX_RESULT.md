@@ -39,6 +39,9 @@ creator-published corrected English SRT. Logged-out YouTube oEmbed returns HTTP 
 the final title. A hosted website is optional under the live requirements, so the
 repository is the judge test path. Devpost submission `1099528` is verified Submitted to
 OpenAI Build Week at `https://devpost.com/software/sishyaguru` in the Education category.
+The credential-free Replay application is also publicly deployed at
+`https://atchayamg.github.io/SishyaGuru/`; its GitHub Pages workflow and a logged-out
+desktop/mobile teaching-turn smoke test pass.
 
 Codex retained architecture, integration and verification ownership. Earlier disposable
 Claude attempts encountered process authentication/model-access failures even though the

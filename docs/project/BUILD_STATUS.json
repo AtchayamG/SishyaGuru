@@ -20,6 +20,7 @@
     "live_gpt_5_6_proof": true,
     "live_voice_proof": true,
     "public_repository": true,
+    "public_replay_app": true,
     "demo_video_artifact_verified": true,
     "youtube_upload_private": false,
     "youtube_public": true,
@@ -35,7 +36,8 @@
     "devpost_submission_id": 1099528,
     "devpost_url": "https://devpost.com/software/sishyaguru",
     "youtube_url": "https://youtu.be/87eZyCzX-ns",
-    "github_url": "https://github.com/AtchayamG/SishyaGuru"
+    "github_url": "https://github.com/AtchayamG/SishyaGuru",
+    "public_app_url": "https://atchayamg.github.io/SishyaGuru/"
   },
-  "last_updated": "2026-07-18T10:11:11+05:30"
+  "last_updated": "2026-07-18T10:41:00+05:30"
 }

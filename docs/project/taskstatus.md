@@ -33,6 +33,9 @@
   violations on the tested Replay shell; keyboard-only and 200%-equivalent paths pass.
 - Publication evidence: the MIT repository is public at
   `https://github.com/AtchayamG/SishyaGuru` and passed a logged-out/clean-clone check.
+  The credential-free Replay application is public at
+  `https://atchayamg.github.io/SishyaGuru/`; its GitHub Pages workflow passed and a
+  logged-out browser completed a grounded teaching turn plus the responsive mobile path.
   The verified 145.224-second 1080p H.264/AAC demo is public at
   `https://youtu.be/87eZyCzX-ns` with the authentic thumbnail and the corrected English
   SRT published as creator captions. Logged-out YouTube oEmbed returns HTTP 200 with the

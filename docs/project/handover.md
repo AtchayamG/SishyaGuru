@@ -41,6 +41,8 @@
   a moderate transitive PostCSS advisory whose forced fix would cross a breaking Next.js
   downgrade; no forced fix was applied.
 - Publication evidence: public MIT repository and clean-clone verification pass. The
+  Replay-only public application is live at `https://atchayamg.github.io/SishyaGuru/`;
+  the Pages workflow, public teaching-turn smoke and 390px responsive check pass. The
   145.224-second final demo is public at `https://youtu.be/87eZyCzX-ns` with the custom
   thumbnail and creator-published English SRT; logged-out oEmbed returns HTTP 200.
   Devpost submission `1099528` is Submitted to OpenAI Build Week at

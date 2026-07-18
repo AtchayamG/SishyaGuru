@@ -8,6 +8,7 @@
 - Devpost status: `Submitted`
 - Devpost project: <https://devpost.com/software/sishyaguru>
 - Public repository: <https://github.com/AtchayamG/SishyaGuru>
+- Public Replay app: <https://atchayamg.github.io/SishyaGuru/>
 - Public demo: <https://youtu.be/87eZyCzX-ns>
 - Codex `/feedback` session ID: `019f5282-7c6f-76d1-888e-ffb0c25de3c8`
 
@@ -20,3 +21,5 @@
   thumbnail, and English subtitles published by the creator.
 - Logged-out YouTube oEmbed returned HTTP 200 with the final title.
 - The deterministic Replay judge path requires no account, API key or microphone.
+- The GitHub Pages deployment completed successfully; a logged-out browser verified the
+  Replay label, one grounded teaching turn and the 390px responsive navigation.
