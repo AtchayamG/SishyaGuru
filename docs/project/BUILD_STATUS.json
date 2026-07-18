@@ -24,6 +24,7 @@
     "youtube_upload_private": true,
     "demo_video": false,
     "devpost_project_draft": true,
+    "devpost_thumbnail": true,
     "devpost_submission": false
   },
   "last_updated": "2026-07-18T09:39:00+05:30"
