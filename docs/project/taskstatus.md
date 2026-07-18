@@ -1,6 +1,6 @@
 # Task Status
 
-- Phase: M1-M5 complete and verified; M6 publication and submission assets active.
+- Phase: M1-M6 complete, published, submitted and verified.
 - Completed: voice-inclusive master blueprint, PRD, system and voice architecture, five
   ADRs, UX/voice UX/content/accessibility specifications, threat model, test strategy,
   evaluation plan, implementation plan, rules/evidence matrix, and submission plan.
@@ -33,13 +33,11 @@
   violations on the tested Replay shell; keyboard-only and 200%-equivalent paths pass.
 - Publication evidence: the MIT repository is public at
   `https://github.com/AtchayamG/SishyaGuru` and passed a logged-out/clean-clone check.
-  The verified 145.224-second 1080p H.264/AAC demo, premium neural narration and corrected
-  English SRT are complete; the video is uploaded to YouTube as Private pending final
-  metadata, captions and action-time approval to publish. The standalone Devpost project
-  exists at `https://devpost.com/software/sishyaguru` with the user-authored
-  tagline/description, repository link, technology list and authentic video title-card
-  thumbnail. It is public as a Devpost software page but has not been submitted to the
-  OpenAI Build Week hackathon.
-- Next objective: publish the YouTube video, complete the Devpost form and audit every
-  required link from a logged-out session. A hosted website is optional under the live
-  requirements; the public repository provides the credential-free Replay judge path.
+  The verified 145.224-second 1080p H.264/AAC demo is public at
+  `https://youtu.be/87eZyCzX-ns` with the authentic thumbnail and the corrected English
+  SRT published as creator captions. Logged-out YouTube oEmbed returns HTTP 200 with the
+  final title. Devpost submission `1099528` is Submitted to OpenAI Build Week at
+  `https://devpost.com/software/sishyaguru`; the live project record contains the public
+  video, repository and Education entry.
+- Next objective: keep the public repository, video and Replay judge path available
+  through judging. A hosted website is optional under the live requirements.

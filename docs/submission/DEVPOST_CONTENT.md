@@ -185,7 +185,8 @@ response.
 ## Submission-time placeholders
 
 - Public app URL: **not required; judges use the public repository's credential-free Replay quickstart**
-- Public YouTube URL: **pending publication and logged-out playback verification**
+- Public YouTube URL: <https://youtu.be/87eZyCzX-ns> (logged-out oEmbed HTTP 200)
 - SishyaGuru Codex `/feedback` session ID: `019f5282-7c6f-76d1-888e-ffb0c25de3c8`
   (the current primary build thread; do not invent a separate ID)
-- Devpost status: **draft until the form reports Submitted**
+- Devpost status: **Submitted** — submission `1099528`,
+  <https://devpost.com/software/sishyaguru>

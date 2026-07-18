@@ -3,7 +3,7 @@
 - Product: SishyaGuru, a reverse-teaching mastery coach.
 - Tagline: You teach. AI learns. You master.
 - Workspace: `D:\Work\Codex\Hackathon Projects\OpenAI Hackathon\SishyaGuru`.
-- Phase: M1-M5 verified; M6 publication and submission assets are active.
+- Phase: M1-M6 complete, published, submitted and verified.
 - Primary category: Education.
 - Core constraint: the project must be unique and substantially different from Incident Commander AI.
 - Frozen P0: the Water Cycle with eight trusted concepts, evidence-bound mastery
@@ -41,10 +41,10 @@
   a moderate transitive PostCSS advisory whose forced fix would cross a breaking Next.js
   downgrade; no forced fix was applied.
 - Publication evidence: public MIT repository and clean-clone verification pass. The
-  145.224-second final demo and English SRT are verified and uploaded to YouTube as Private.
-  Devpost project `sishyaguru` is a public standalone software page but has not been
-  submitted to the OpenAI Build Week hackathon.
-- Next: public YouTube metadata/captions, Devpost form, and final logged-out evidence
-  audit. The live submission requirements make a hosted website optional; judges use the
-  public repository's credential-free Replay quickstart.
+  145.224-second final demo is public at `https://youtu.be/87eZyCzX-ns` with the custom
+  thumbnail and creator-published English SRT; logged-out oEmbed returns HTTP 200.
+  Devpost submission `1099528` is Submitted to OpenAI Build Week at
+  `https://devpost.com/software/sishyaguru` and is linked to the public repository/video.
+- Next: preserve public access through judging. The live submission requirements make a
+  hosted website optional; judges use the repository's credential-free Replay quickstart.
   Do not add database, auth, queues, RAG, multiple topics or Realtime.

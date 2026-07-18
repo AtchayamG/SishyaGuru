@@ -1,6 +1,6 @@
 {
-  "active_milestone": "M6_PUBLICATION_AND_SUBMISSION_ASSETS",
-  "status": "m6_in_progress",
+  "active_milestone": "M6_COMPLETE",
+  "status": "complete",
   "gates": {
     "rules_verified": true,
     "blueprint_complete": true,
@@ -21,11 +21,21 @@
     "live_voice_proof": true,
     "public_repository": true,
     "demo_video_artifact_verified": true,
-    "youtube_upload_private": true,
-    "demo_video": false,
+    "youtube_upload_private": false,
+    "youtube_public": true,
+    "youtube_captions_published": true,
+    "youtube_thumbnail_published": true,
+    "demo_video": true,
     "devpost_project_published": true,
     "devpost_thumbnail": true,
-    "devpost_submission": false
+    "devpost_submission": true,
+    "devpost_submission_verified": true
   },
-  "last_updated": "2026-07-18T09:46:00+05:30"
+  "submission": {
+    "devpost_submission_id": 1099528,
+    "devpost_url": "https://devpost.com/software/sishyaguru",
+    "youtube_url": "https://youtu.be/87eZyCzX-ns",
+    "github_url": "https://github.com/AtchayamG/SishyaGuru"
+  },
+  "last_updated": "2026-07-18T10:11:11+05:30"
 }

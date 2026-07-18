@@ -18,7 +18,11 @@ credential-free judging path.
 The public source repository is available at
 <https://github.com/AtchayamG/SishyaGuru>. OpenAI Build Week does not require a hosted
 website, so judges can run the complete credential-free Replay path from this repository.
-The final Devpost entry is still being finalized and is not claimed as submitted yet.
+OpenAI Build Week submission:
+
+- Demo: <https://youtu.be/87eZyCzX-ns>
+- Devpost: <https://devpost.com/software/sishyaguru>
+- Status: Submitted in the Education category (submission `1099528`)
 
 ## Local quality checks
 

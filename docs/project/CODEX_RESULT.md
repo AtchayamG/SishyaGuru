@@ -34,9 +34,11 @@ is live and clean-clone verified. A strict WebM/Opus parser
 also accepts authentic Chrome MediaRecorder output without trusting optional duration
 metadata; the captured Live voice path now succeeds through transcription, reviewed
 submission, GPT-5.6 assessment and disclosed probe speech. The final 145.224-second 1080p
-demo and corrected English SRT are verified and uploaded to YouTube as Private. A hosted
-website is optional under the live requirements, so the repository is the judge test path.
-Public video publication and Devpost submission are not yet claimed.
+demo is public at `https://youtu.be/87eZyCzX-ns` with the authentic custom thumbnail and
+creator-published corrected English SRT. Logged-out YouTube oEmbed returns HTTP 200 with
+the final title. A hosted website is optional under the live requirements, so the
+repository is the judge test path. Devpost submission `1099528` is verified Submitted to
+OpenAI Build Week at `https://devpost.com/software/sishyaguru` in the Education category.
 
 Codex retained architecture, integration and verification ownership. Earlier disposable
 Claude attempts encountered process authentication/model-access failures even though the
