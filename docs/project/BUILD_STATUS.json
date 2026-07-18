@@ -1,6 +1,6 @@
 {
   "active_milestone": "M6_PUBLICATION_AND_SUBMISSION_ASSETS",
-  "status": "m5_verified",
+  "status": "m6_in_progress",
   "gates": {
     "rules_verified": true,
     "blueprint_complete": true,
@@ -19,9 +19,11 @@
     "m5_submission_hardening": true,
     "live_gpt_5_6_proof": true,
     "live_voice_proof": true,
-    "public_repository": false,
+    "public_repository": true,
+    "demo_video_artifact_verified": true,
+    "youtube_upload_private": true,
     "demo_video": false,
     "devpost_submission": false
   },
-  "last_updated": "2026-07-18T02:30:00+05:30"
+  "last_updated": "2026-07-18T09:29:15+05:30"
 }

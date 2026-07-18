@@ -17,7 +17,7 @@ implemented. Live mode now uses server-only GPT-5.6 Structured Outputs with `sto
 fail-closed evidence validation, bounded memory-only transcription, and disclosed
 exact-probe speech. The client prevents duplicate work, cancels stale operations, rejects
 provider mismatches, requires transcript review and provides explicit recording discard.
-Lint, typecheck, 33 unit/domain tests, production build, 9 Replay Chromium scenarios and
+Lint, typecheck, 43 unit/domain tests, production build, 12 Replay Chromium scenarios and
 7 Live Chromium scenarios pass. M5 also adds streamed request bounds, a three-turn server
 budget, hardened response headers, accurate storage disclosures, valid responsive
 landmarks, concise assistive announcements, and automated accessibility evidence. The
@@ -30,7 +30,12 @@ and the complete disclosed TTS-to-WebM-to-transcription chain. The proof logged 
 metadata: eight assessment records, a probe target, 72,960 MP3 bytes, a 4,568 ms
 server-derived WebM duration, and a 54-character candidate transcript. It did not log the
 key, learner content, transcript content or raw provider output. Deployment, public
-repository, video and Devpost submission are not yet claimed.
+The public MIT repository is now live and clean-clone verified. A strict WebM/Opus parser
+also accepts authentic Chrome MediaRecorder output without trusting optional duration
+metadata; the captured Live voice path now succeeds through transcription, reviewed
+submission, GPT-5.6 assessment and disclosed probe speech. The final 145.224-second 1080p
+demo and corrected English SRT are verified and uploaded to YouTube as Private. Public
+deployment, public video publication and Devpost submission are not yet claimed.
 
 Codex retained architecture, integration and verification ownership. Earlier disposable
 Claude attempts encountered process authentication/model-access failures even though the

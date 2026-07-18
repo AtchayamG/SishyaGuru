@@ -1,0 +1,111 @@
+1
+00:00:00,050 --> 00:00:02,307
+Most AI tutors explain more.
+
+2
+00:00:02,307 --> 00:00:05,781
+But hearing an answer is not the same as understanding it.
+
+3
+00:00:05,781 --> 00:00:14,639
+SishyaGuru reverses the conversation: the student teaches, the AI learns, and mastery must be supported by the student's own words.
+
+4
+00:00:14,639 --> 00:00:17,187
+This is SishyaGuru: “You teach.
+
+5
+00:00:17,187 --> 00:00:18,293
+AI learns.
+
+6
+00:00:18,293 --> 00:00:19,326
+You master.”
+
+7
+00:00:19,326 --> 00:00:27,295
+The left panel is a live concept map, the centre is the teaching conversation, and the right panel shows evidence-backed feedback.
+
+8
+00:00:27,295 --> 00:00:33,341
+This public demo is clearly labelled Replay, so judges can reproduce it without an API key.
+
+9
+00:00:33,341 --> 00:00:38,557
+In Live mode, a learner can press Record and teach for up to sixty seconds.
+
+10
+00:00:38,557 --> 00:00:41,165
+Recording is never continuous.
+
+11
+00:00:41,165 --> 00:00:46,766
+The learner stops, reviews and edits the transcript, then explicitly submits it.
+
+12
+00:00:46,766 --> 00:00:48,329
+Nothing auto-submits.
+
+13
+00:00:48,329 --> 00:00:50,516
+Typing always remains available.
+
+14
+00:00:50,516 --> 00:00:54,002
+Here I teach how solar energy drives evaporation.
+
+15
+00:00:54,002 --> 00:00:57,920
+SishyaGuru does not award mastery from fluent prose alone.
+
+16
+00:00:57,920 --> 00:01:08,545
+GPT-5.6 returns a strict structured assessment, and the application accepts a mastery change only when its evidence quote is an exact substring of my lesson.
+
+17
+00:01:08,545 --> 00:01:12,043
+The AI learner then asks one focused question.
+
+18
+00:01:12,043 --> 00:01:20,180
+As I teach condensation, precipitation and collection, the concept map changes with text and icons, not colour alone.
+
+19
+00:01:20,180 --> 00:01:29,699
+When the explanation contains a misconception, the system cites the exact wording and responds respectfully instead of pretending the concept is secure.
+
+20
+00:01:29,699 --> 00:01:34,435
+At the end, the summary separates demonstrated strengths from gaps to revisit.
+
+21
+00:01:34,435 --> 00:01:39,495
+It is formative guidance for this session, not a grade or permanent claim about ability.
+
+22
+00:01:39,495 --> 00:01:47,331
+The Live path uses GPT-5.6 Structured Outputs with provider storage disabled for assessment requests.
+
+23
+00:01:47,331 --> 00:01:57,439
+OpenAI transcription creates candidate text, and OpenAI speech renders only the already-validated follow-up question with an AI-generated voice disclosure.
+
+24
+00:01:57,439 --> 00:02:01,826
+Raw audio and unsubmitted transcript candidates are ephemeral.
+
+25
+00:02:01,826 --> 00:02:07,247
+Submitted reviewed text stays only in browser-local progress until Clear.
+
+26
+00:02:07,247 --> 00:02:15,937
+Codex accelerated the architecture, typed contracts, bounded voice adapters, responsive interface and adversarial browser tests.
+
+27
+00:02:15,937 --> 00:02:22,608
+The release passes thirty-five domain tests, twelve Replay scenarios and seven Live scenarios.
+
+28
+00:02:22,608 --> 00:02:25,216
+SishyaGuru: master by teaching.

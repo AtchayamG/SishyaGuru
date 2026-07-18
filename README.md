@@ -8,12 +8,16 @@ understanding grow through a live concept mastery map.
 
 ## Status
 
-Pre-production architecture and milestones M1-M4 are implemented and verified. The app
+Pre-production architecture and milestones M1-M5 are implemented and verified. The app
 includes a deterministic three-turn Replay learning loop, evidence-bound mastery map,
 grounded feedback/summary, browser-local progress, and an explicit simulated transcript
 review path. Live mode adds server-only GPT-5.6 Structured Outputs, bounded push-to-talk
 transcription, and disclosed exact-probe speech; Replay remains the reliable
 credential-free judging path.
+
+The public source repository is available at
+<https://github.com/AtchayamG/SishyaGuru>. The Replay-only deployment and final Devpost
+entry are being finalized; the repository does not claim those links until they are live.
 
 ## Local quality checks
 
@@ -110,15 +114,6 @@ grade or verified fact.
 - Implementation plan: `docs/project/IMPLEMENTATION_PLAN.md`
 - Project status: `docs/project/taskstatus.md`
 - Hackathon evidence: `docs/hackathon/rules-and-evidence-matrix.md`
-
-## Intended P0
-
-A single Next.js application will host the learner experience and server-only OpenAI
-adapters. The learner may type or record a bounded push-to-talk lesson, review/edit the
-transcript, and explicitly submit it through the same evidence-bound GPT-5.6 contract.
-The AI's exact follow-up remains visible as text and may play as disclosed AI-generated
-speech. A clearly labelled deterministic Replay mode supports credential-free judging
-without calling OpenAI audio APIs.
 
 ## License
 

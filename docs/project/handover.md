@@ -36,9 +36,12 @@
   response security headers, corrected responsive semantics, concise live announcements,
   Axe, keyboard-only and 200%-equivalent responsive coverage. Public deployment is
   intentionally Replay-only with no OpenAI key.
-- Current gates: lint, strict typecheck, 35 unit/domain tests, production build, 12 Replay
+- Current gates: lint, strict typecheck, 43 unit/domain tests, production build, 12 Replay
   browser tests and 7 Live browser tests pass. `npm audit --audit-level=high` reports only
   a moderate transitive PostCSS advisory whose forced fix would cross a breaking Next.js
   downgrade; no forced fix was applied.
-- Next: public repo, Replay-only deployment, final media and Devpost submission evidence.
+- Publication evidence: public MIT repository and clean-clone verification pass. The
+  145.224-second final demo and English SRT are verified and uploaded to YouTube as Private.
+- Next: Replay-only deployment, public YouTube metadata/captions, Devpost form, and final
+  logged-out evidence audit.
   Do not add database, auth, queues, RAG, multiple topics or Realtime.

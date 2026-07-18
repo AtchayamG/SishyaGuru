@@ -28,9 +28,13 @@
 - M5 verification: truthful raw-audio/submitted-text lifecycle disclosures, streamed body
   limits, three-turn server cap, hardened response headers, valid responsive landmarks,
   concise live regions, Replay-only public deployment policy and accessibility evidence.
-- Current verification: lint, strict typecheck, 35 unit/domain tests, production build,
+- Current verification: lint, strict typecheck, 43 unit/domain tests, production build,
   12 Replay browser tests and 7 Live browser tests pass. Axe reports zero WCAG A/AA
   violations on the tested Replay shell; keyboard-only and 200%-equivalent paths pass.
-- Public repository, demo video, and Devpost submission: not started.
-- Next objective: publish the public repository and Replay-only deployment, then create
-  final screenshots, narrated demo/captions and Devpost evidence.
+- Publication evidence: the MIT repository is public at
+  `https://github.com/AtchayamG/SishyaGuru` and passed a logged-out/clean-clone check.
+  The verified 145.224-second 1080p H.264/AAC demo, premium neural narration and corrected
+  English SRT are complete; the video is uploaded to YouTube as Private pending final
+  metadata, captions and action-time approval to publish.
+- Next objective: publish the Replay-only deployment, publish the YouTube video, complete
+  the Devpost form and audit every link from a logged-out session.

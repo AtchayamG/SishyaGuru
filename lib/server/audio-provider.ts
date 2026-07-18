@@ -7,6 +7,7 @@ import {
   evaluateAudioPolicy,
 } from "../audio-policy";
 import type { TranscriptionEnvelope } from "../contract";
+import { deriveWebmDurationMs } from "./webm-duration";
 
 const PROVIDER_TIMEOUT_MS = 25_000;
 
@@ -30,17 +31,22 @@ export async function inspectAudio(bytes: Uint8Array) {
   const mediaType = detectMediaType(bytes);
   if (!mediaType) return undefined;
   try {
-    const metadata = await parseBuffer(
-      bytes,
-      { mimeType: mediaType, size: bytes.byteLength },
-      { duration: true, skipCovers: true },
-    );
-    const durationSeconds = metadata.format.duration;
-    if (!durationSeconds || !Number.isFinite(durationSeconds)) return undefined;
+    const durationMs = mediaType === "audio/webm"
+      ? deriveWebmDurationMs(bytes)
+      : Math.ceil(
+          ((
+            await parseBuffer(
+              bytes,
+              { mimeType: mediaType, size: bytes.byteLength },
+              { duration: true, skipCovers: true },
+            )
+          ).format.duration ?? 0) * 1000,
+        );
+    if (!durationMs) return undefined;
     const policy = evaluateAudioPolicy({
       mediaType,
       byteLength: bytes.byteLength,
-      durationMs: Math.ceil(durationSeconds * 1000),
+      durationMs,
       durationSource: "server-derived",
     });
     return policy.ok ? policy.metadata : undefined;

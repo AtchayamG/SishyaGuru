@@ -8,6 +8,9 @@ playwright-report/
 test-results/
 *.log
 *.tsbuildinfo
+docs/submission/*.mp4
+docs/submission/*.mp3
+docs/submission/*.wav
+docs/submission/raw-clips/
 .DS_Store
 Thumbs.db
-

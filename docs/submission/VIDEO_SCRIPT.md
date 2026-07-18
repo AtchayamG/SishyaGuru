@@ -1,0 +1,51 @@
+# SishyaGuru Demo Narration
+
+Target runtime: 2:20–2:35. Maximum: 2:59.
+
+## 0:00–0:15 — Problem
+
+Most AI tutors explain more. But hearing an answer is not the same as understanding it.
+SishyaGuru reverses the conversation: the student teaches, the AI learns, and mastery must
+be supported by the student's own words.
+
+## 0:15–0:32 — Product
+
+This is SishyaGuru: “You teach. AI learns. You master.” The left panel is a live concept
+map, the centre is the teaching conversation, and the right panel shows evidence-backed
+feedback. This public demo is clearly labelled Replay, so judges can reproduce it without
+an API key.
+
+## 0:32–0:58 — Voice and review gate
+
+In Live mode, a learner can press Record and teach for up to sixty seconds. Recording is
+never continuous. The learner stops, reviews and edits the transcript, then explicitly
+submits it. Nothing auto-submits. Typing always remains available.
+
+## 0:58–1:28 — Reverse-teaching loop
+
+Here I teach how solar energy drives evaporation. SishyaGuru does not award mastery from
+fluent prose alone. GPT-5.6 returns a strict structured assessment, and the application
+accepts a mastery change only when its evidence quote is an exact substring of my lesson.
+The AI learner then asks one focused question. As I teach condensation, precipitation and
+collection, the concept map changes with text and icons, not colour alone.
+
+## 1:28–1:48 — Misconception and summary
+
+When the explanation contains a misconception, the system cites the exact wording and
+responds respectfully instead of pretending the concept is secure. At the end, the summary
+separates demonstrated strengths from gaps to revisit. It is formative guidance for this
+session, not a grade or permanent claim about ability.
+
+## 1:48–2:15 — OpenAI and safety architecture
+
+The Live path uses GPT-5.6 Structured Outputs with provider storage disabled for assessment
+requests. OpenAI transcription creates candidate text, and OpenAI speech renders only the
+already-validated follow-up question with an AI-generated voice disclosure. Raw audio and
+unsubmitted transcript candidates are ephemeral. Submitted reviewed text stays only in
+browser-local progress until Clear.
+
+## 2:15–2:30 — Build story and close
+
+Codex accelerated the architecture, typed contracts, bounded voice adapters, responsive
+interface and adversarial browser tests. The release passes thirty-five domain tests,
+twelve Replay scenarios and seven Live scenarios. SishyaGuru: master by teaching.
