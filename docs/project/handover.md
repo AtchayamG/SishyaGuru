@@ -42,7 +42,8 @@
   downgrade; no forced fix was applied.
 - Publication evidence: public MIT repository and clean-clone verification pass. The
   145.224-second final demo and English SRT are verified and uploaded to YouTube as Private.
-  Devpost project `sishyaguru` exists as a private incomplete draft and is not submitted.
+  Devpost project `sishyaguru` is a public standalone software page but has not been
+  submitted to the OpenAI Build Week hackathon.
 - Next: public YouTube metadata/captions, Devpost form, and final logged-out evidence
   audit. The live submission requirements make a hosted website optional; judges use the
   public repository's credential-free Replay quickstart.
