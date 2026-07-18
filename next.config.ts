@@ -9,10 +9,21 @@ const securityHeaders = [
   { key: "Content-Security-Policy", value: "frame-ancestors 'none'; base-uri 'self'; form-action 'self'" },
 ] as const;
 
-const nextConfig: NextConfig = {
-  async headers() {
-    return [{ source: "/(.*)", headers: [...securityHeaders] }];
-  },
-};
+// GitHub Pages build: static Replay-only export served under /SishyaGuru.
+// Response headers cannot be set on a static host, so the headers() config
+// only applies to the normal server build.
+const isPagesExport = process.env.GITHUB_PAGES === "true";
+
+const nextConfig: NextConfig = isPagesExport
+  ? {
+      output: "export",
+      basePath: "/SishyaGuru",
+      env: { NEXT_PUBLIC_REPLAY_ONLY: "1" },
+    }
+  : {
+      async headers() {
+        return [{ source: "/(.*)", headers: [...securityHeaders] }];
+      },
+    };
 
 export default nextConfig;
