@@ -19,7 +19,7 @@
 - English captions, automatic or corrected.
 - Human-reviewed Devpost description.
 - Education category selection.
-- New primary SishyaGuru Codex `/feedback` session ID.
+- Truthful `/feedback` Session ID from the primary Codex build thread.
 - Judge instructions that require no credential for the golden path.
 
 ## Target video structure
@@ -56,6 +56,6 @@ Do not submit until all are true:
 - bounded voice receipt passes; disclosure and captions/text equivalence are visible;
 - video is public, playable, under three minutes and accurately narrated;
 - description matches the current repository and footage;
-- new Codex session ID is entered;
+- primary Codex build-thread Session ID is entered;
 - eligibility and official-rule declarations are explicitly confirmed by the user for this second entry;
 - Devpost reports 5/5 and Submitted.

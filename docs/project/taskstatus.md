@@ -35,6 +35,7 @@
   `https://github.com/AtchayamG/SishyaGuru` and passed a logged-out/clean-clone check.
   The verified 145.224-second 1080p H.264/AAC demo, premium neural narration and corrected
   English SRT are complete; the video is uploaded to YouTube as Private pending final
-  metadata, captions and action-time approval to publish.
+  metadata, captions and action-time approval to publish. A private incomplete Devpost
+  project draft exists at `https://devpost.com/software/sishyaguru`; it is not submitted.
 - Next objective: publish the Replay-only deployment, publish the YouTube video, complete
   the Devpost form and audit every link from a logged-out session.
