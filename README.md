@@ -16,8 +16,9 @@ transcription, and disclosed exact-probe speech; Replay remains the reliable
 credential-free judging path.
 
 The public source repository is available at
-<https://github.com/AtchayamG/SishyaGuru>. The Replay-only deployment and final Devpost
-entry are being finalized; the repository does not claim those links until they are live.
+<https://github.com/AtchayamG/SishyaGuru>. OpenAI Build Week does not require a hosted
+website, so judges can run the complete credential-free Replay path from this repository.
+The final Devpost entry is still being finalized and is not claimed as submitted yet.
 
 ## Local quality checks
 
@@ -68,9 +69,9 @@ ephemeral. Explicitly submitted reviewed text is retained in browser-local progr
 **Clear progress**. OpenAI provider processing still applies; do not enter personal or
 sensitive information.
 
-The public judge deployment intentionally runs Replay mode and contains no shared OpenAI
-credential. Live mode is a local, owner-authorized proof path until a production deployment
-adds authenticated users and durable distributed abuse/cost controls.
+The public judging path intentionally uses Replay mode and contains no shared OpenAI
+credential. Live mode remains a local, owner-authorized proof path until a production
+service adds authenticated users and durable distributed abuse/cost controls.
 
 ## Architecture and OpenAI use
 

@@ -184,7 +184,7 @@ response.
 
 ## Submission-time placeholders
 
-- Public app URL: **pending Replay-only deployment**
+- Public app URL: **not required; judges use the public repository's credential-free Replay quickstart**
 - Public YouTube URL: **pending publication and logged-out playback verification**
 - SishyaGuru Codex `/feedback` session ID: `019f5282-7c6f-76d1-888e-ffb0c25de3c8`
   (the current primary build thread; do not invent a separate ID)

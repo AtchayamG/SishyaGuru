@@ -37,5 +37,6 @@
   English SRT are complete; the video is uploaded to YouTube as Private pending final
   metadata, captions and action-time approval to publish. A private incomplete Devpost
   project draft exists at `https://devpost.com/software/sishyaguru`; it is not submitted.
-- Next objective: publish the Replay-only deployment, publish the YouTube video, complete
-  the Devpost form and audit every link from a logged-out session.
+- Next objective: publish the YouTube video, complete the Devpost form and audit every
+  required link from a logged-out session. A hosted website is optional under the live
+  requirements; the public repository provides the credential-free Replay judge path.

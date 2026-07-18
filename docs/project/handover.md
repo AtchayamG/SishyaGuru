@@ -43,6 +43,7 @@
 - Publication evidence: public MIT repository and clean-clone verification pass. The
   145.224-second final demo and English SRT are verified and uploaded to YouTube as Private.
   Devpost project `sishyaguru` exists as a private incomplete draft and is not submitted.
-- Next: Replay-only deployment, public YouTube metadata/captions, Devpost form, and final
-  logged-out evidence audit.
+- Next: public YouTube metadata/captions, Devpost form, and final logged-out evidence
+  audit. The live submission requirements make a hosted website optional; judges use the
+  public repository's credential-free Replay quickstart.
   Do not add database, auth, queues, RAG, multiple topics or Realtime.

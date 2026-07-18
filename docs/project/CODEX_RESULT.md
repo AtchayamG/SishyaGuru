@@ -22,20 +22,21 @@ Lint, typecheck, 43 unit/domain tests, production build, 12 Replay Chromium scen
 budget, hardened response headers, accurate storage disclosures, valid responsive
 landmarks, concise assistive announcements, and automated accessibility evidence. The
 tested Replay shell has zero Axe WCAG A/AA violations; keyboard-only and 200%-equivalent
-responsive scenarios pass. The public deployment is intentionally Replay-only and will
-contain no shared OpenAI credential.
+responsive scenarios pass. The public judging path is intentionally Replay-only and
+contains no shared OpenAI credential.
 
 A redacted real-key smoke through the application routes proved one GPT-5.6 assessment
 and the complete disclosed TTS-to-WebM-to-transcription chain. The proof logged only safe
 metadata: eight assessment records, a probe target, 72,960 MP3 bytes, a 4,568 ms
 server-derived WebM duration, and a 54-character candidate transcript. It did not log the
-key, learner content, transcript content or raw provider output. Deployment, public
-The public MIT repository is now live and clean-clone verified. A strict WebM/Opus parser
+key, learner content, transcript content or raw provider output. The public MIT repository
+is live and clean-clone verified. A strict WebM/Opus parser
 also accepts authentic Chrome MediaRecorder output without trusting optional duration
 metadata; the captured Live voice path now succeeds through transcription, reviewed
 submission, GPT-5.6 assessment and disclosed probe speech. The final 145.224-second 1080p
-demo and corrected English SRT are verified and uploaded to YouTube as Private. Public
-deployment, public video publication and Devpost submission are not yet claimed.
+demo and corrected English SRT are verified and uploaded to YouTube as Private. A hosted
+website is optional under the live requirements, so the repository is the judge test path.
+Public video publication and Devpost submission are not yet claimed.
 
 Codex retained architecture, integration and verification ownership. Earlier disposable
 Claude attempts encountered process authentication/model-access failures even though the
