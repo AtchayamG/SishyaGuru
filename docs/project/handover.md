@@ -46,7 +46,8 @@
   145.224-second final demo is public at `https://youtu.be/87eZyCzX-ns` with the custom
   thumbnail and creator-published English SRT; logged-out oEmbed returns HTTP 200.
   Devpost submission `1099528` is Submitted to OpenAI Build Week at
-  `https://devpost.com/software/sishyaguru` and is linked to the public repository/video.
-- Next: preserve public access through judging. The live submission requirements make a
-  hosted website optional; judges use the repository's credential-free Replay quickstart.
+  `https://devpost.com/software/sishyaguru`; its expanded story, primary public Replay
+  link, repository link, video and two workflow screenshots are published.
+- Next: preserve public access through judging; judges can use the primary public Replay
+  link or the repository's credential-free Replay quickstart.
   Do not add database, auth, queues, RAG, multiple topics or Realtime.

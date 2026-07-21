@@ -43,6 +43,10 @@ The credential-free Replay application is also publicly deployed at
 `https://atchayamg.github.io/SishyaGuru/`; its GitHub Pages workflow and a logged-out
 desktop/mobile teaching-turn smoke test pass.
 
+The final 2026-07-21 submission audit expanded the public Devpost story, changed the
+primary try-it link from the repository to the deployed Replay application, retained the
+repository as a second link, and published two evidence/mastery workflow screenshots.
+
 Codex retained architecture, integration and verification ownership. Earlier disposable
 Claude attempts encountered process authentication/model-access failures even though the
 account still had Fable quota. After relocating the project, Codex verified and used

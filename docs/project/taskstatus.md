@@ -41,6 +41,6 @@
   SRT published as creator captions. Logged-out YouTube oEmbed returns HTTP 200 with the
   final title. Devpost submission `1099528` is Submitted to OpenAI Build Week at
   `https://devpost.com/software/sishyaguru`; the live project record contains the public
-  video, repository and Education entry.
+  video, public Replay application, repository, two workflow screenshots and Education entry.
 - Next objective: keep the public repository, video and Replay judge path available
   through judging. A hosted website is optional under the live requirements.

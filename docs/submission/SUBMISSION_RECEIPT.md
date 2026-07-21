@@ -15,7 +15,9 @@
 ## Verification
 
 - Devpost's authenticated project record lists OpenAI Build Week with a non-null
-  submission timestamp and the public repository as its website URL.
+  submission timestamp and the public Replay application as its primary website URL.
+- The final Devpost audit expanded the full project story, retained the repository as
+  a second link, and published two workflow screenshots.
 - Devpost's project list reports SishyaGuru as an in-progress OpenAI Build Week entry.
 - YouTube Studio reports the video published with no copyright issues, the custom
   thumbnail, and English subtitles published by the creator.
